@@ -9,6 +9,9 @@ class AreaController extends Controller
 {
 
     public function saveProvinces(){
+        if(!env('IS_ENABLE_SERVICE')){
+            return 0;
+        }
         $areaService = new AreaService();
         $areas = $areaService->getProvince();
 
@@ -27,6 +30,9 @@ class AreaController extends Controller
     }
 
     public function saveCitys(){
+        if(!env('IS_ENABLE_SERVICE')){
+            return 0;
+        }
 
         ini_set("max_execution_time", 3000);
         set_time_limit(3000);
