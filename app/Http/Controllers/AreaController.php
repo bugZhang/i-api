@@ -60,7 +60,6 @@ class AreaController extends Controller
     public function getProvince(){
         $areaModel  = new AreaModel();
         $provinces = $areaModel->selectAreasByLevel(AreaModel::LEVEL_PROVINCE);
-
         if($provinces){
             $data = [];
             foreach ($provinces as $province){
@@ -69,12 +68,10 @@ class AreaController extends Controller
                 $temp['name'] = $province->name;
                 $data[] = $temp;
             }
-            return $this->return_json('error', '未查询到数据');
+            return $this->return_json('success', $data);
         }else{
             return $this->return_json('error', '未查询到数据');
         }
-
-        return $this->return_json('success', $provinces);
     }
 
     public function getCity($provinceId){
