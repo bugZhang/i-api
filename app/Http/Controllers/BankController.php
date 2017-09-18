@@ -22,7 +22,7 @@ class BankController extends Controller
                 $temp['id'] = $bank->id;
                 $data[] = $temp;
             }
-            return $this->return_json('success', $data);
+            return $this->return_json('success', ['data'=>$data]);
 
         }else{
             return $this->return_json('error', '未查询到结果');

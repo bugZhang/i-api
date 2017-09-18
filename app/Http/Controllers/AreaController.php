@@ -74,7 +74,7 @@ class AreaController extends Controller
                 $temp['name'] = $province->name;
                 $data[] = $temp;
             }
-            return $this->return_json('success', $data);
+            return $this->return_json('success', ['data'=>$data]);
         }else{
             return $this->return_json('error', '未查询到数据');
         }
@@ -96,7 +96,7 @@ class AreaController extends Controller
                 $temp['name'] = $city->name;
                 $data[] = $temp;
             }
-            return $this->return_json('success', $data);
+            return $this->return_json('success', ['data'=>$data]);
         }else{
             return $this->return_json('error', '未查询到数据');
         }
