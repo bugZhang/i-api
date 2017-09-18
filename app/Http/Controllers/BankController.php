@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class BankController extends Controller
 {
 
-    public function getBanks($bankCode, $province, $city, $keyword){
+    public function getBanks($bankCode, $province, $city, $keyword, $page = 1){
 
         if(in_array($province, ['天津市', '重庆市', '北京市', '上海市'])){
             $city = $province;

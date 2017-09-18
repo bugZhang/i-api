@@ -22,5 +22,5 @@ Route::get('/service/area/saveCitys', 'AreaController@saveCitys');
 
 Route::get('/api/area/getProvince', 'AreaController@getProvince');
 Route::get('/api/area/getCity/{id}', 'AreaController@getCity');
-Route::get('/api/bank/search/{bankCode}/{province}/{city}/{keyword}', 'BankController@getBanks');
+Route::get('/api/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
 
