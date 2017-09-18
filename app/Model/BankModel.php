@@ -17,7 +17,7 @@ class BankModel extends Model
             $condition[] = ['cityName', '=', $city];
         }
         $banks = DB::table('bank_branch_online')->where($condition)->select('id', 'code', 'name', 'address')->limit(6)->get();
-        return $banks;
+        return $banks && count($banks) > 0 ? $banks : false;
     }
 
 }

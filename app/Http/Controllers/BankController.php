@@ -10,9 +10,11 @@ class BankController extends Controller
 
     public function getBanks($bankCode, $province, $city, $keyword){
 
+        if(in_array($province, ['天津市', '重庆市', '北京市', '上海市'])){
+            $city = $province;
+        }
         $bankModel  = new BankModel();
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city);
-
         if($banks){
             foreach ($banks as $bank){
                 $temp = [];
