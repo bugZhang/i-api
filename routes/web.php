@@ -24,3 +24,5 @@ Route::get('/api/area/getProvince', 'AreaController@getProvince');
 Route::get('/api/area/getCity/{id}', 'AreaController@getCity');
 Route::get('/api/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
 
+//Route::get('/api/area/getAll', 'AreaController@getProvinceAndCity');
+
