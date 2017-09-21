@@ -100,6 +100,25 @@ class AreaController extends Controller
         }else{
             return $this->return_json('error', '未查询到数据');
         }
+    }
 
+    public function getProvinceAndCity(){
+        $areaModel  = new AreaModel();
+        $provinces = $areaModel->selectAreasByLevel(AreaModel::LEVEL_PROVINCE);
+        if($provinces){
+            $data = [];
+            foreach ($provinces as $province){
+                $citys = $areaModel->selectAreasByLevel(AreaModel::LEVEL_CITY, $province->area_id);
+                if($citys){
+                    foreach ($citys as $city) {
+                        $data[$province->name][] = $city->name;
+                    }
+                }
+
+            }
+            return $this->return_json('success', $data);
+        }else{
+            return $this->return_json('error', '未查询到数据');
+        }
     }
 }

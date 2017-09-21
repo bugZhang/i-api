@@ -14,7 +14,7 @@ class BankController extends Controller
             $city = $province;
         }
         $bankModel  = new BankModel();
-        $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city);
+        $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
         if($banks){
             foreach ($banks as $bank){
                 $temp = [];
