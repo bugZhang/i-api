@@ -13,7 +13,7 @@ class BankModel extends Model
         if(!$page || $page < 1){
             $page = 1;
         }
-        $limit = 5;
+        $limit = 6;
         $offset = $limit * ($page - 1);
         $condition[] = ['bankCode', '=', $bankCode];
         $condition[] = ['name', 'like', '%' . $keyword . '%'];
