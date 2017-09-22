@@ -16,3 +16,11 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('/area/getProvince', 'AreaController@getProvince');
+Route::get('/area/getCity/{id}', 'AreaController@getCity');
+Route::get('/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
+
+Route::post('/wx/get-session-key', 'WxLoginController@getSessionKey');
+Route::get('/wx/get-user/{openid}', 'WxLoginController@getUser');
