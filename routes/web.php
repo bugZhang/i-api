@@ -24,4 +24,3 @@ Route::get('/api/area/getCity/{id}', 'AreaController@getCity');
 Route::get('/api/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
 
 Route::get('/api/wx/get-session-key/{code}', 'WxLoginController@getSessionKey');
-
