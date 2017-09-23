@@ -15,13 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::get('/service/area/saveProvinces', 'AreaController@saveProvinces');
 Route::get('/service/area/saveCitys', 'AreaController@saveCitys');
-
-Route::get('/api/area/getProvince', 'AreaController@getProvince');
-Route::get('/api/area/getCity/{id}', 'AreaController@getCity');
-Route::get('/api/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
-
-//Route::post('/api/wx/get-session-key', 'WxLoginController@getSessionKey');
-//Route::get('/api/wx/get-user/{openid}', 'WxLoginController@getUser');

@@ -32,19 +32,7 @@ class WxPkcs7Utils
         return $text . $tmp;
     }
 
-    /**
-     * 对解密后的明文进行补位删除
-     * @param decrypted 解密后的明文
-     * @return 删除填充补位后的明文
-     */
-    function decode($text)
-    {
-        $pad = ord(substr($text, -1));
-        if ($pad < 1 || $pad > 32) {
-            $pad = 0;
-        }
-        return substr($text, 0, (strlen($text) - $pad));
-    }
+
 
     public function Prpcrypt( $k )
     {
@@ -60,6 +48,11 @@ class WxPkcs7Utils
             $decrypted = mdecrypt_generic($module, $aesCipher);
             mcrypt_generic_deinit($module);
             mcrypt_module_close($module);
+
+
+            openssl_encrypt($aesCipher, $aesCipher, $this->key, $aesIV);
+
+
         } catch (Exception $e) {
             return 0;
         }

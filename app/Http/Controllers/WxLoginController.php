@@ -12,16 +12,8 @@ use Illuminate\Support\Str;
 class WxLoginController extends Controller
 {
     private $authorization_code = 'haha_test';
-    private $wx_redis_session_prefix = 'wx_session:';
-    private $wx_redis_session_expire = 60 * 60 * 24;
 
-    public function getSessionKey(Request $request){
-
-        $code   = $request->input('code');
-        $sex    = $request->input('sex',0);
-        $province   = $request->input('province', '');
-        $city       = $request->input('city', '');
-        $phone      = $request->input('phone', '');
+    public function getSessionKey($code){
 
         $appid = env('WX_APPID');
         $secret = env('WX_SECRET');
@@ -46,26 +38,60 @@ class WxLoginController extends Controller
             return $this->return_json('error', $msg);
         }
 
-        $expires_in = $response['expires_in'] ? $response['expires_in'] * 2 : $this->wx_redis_session_expire;
+        $expires_in = $response['expires_in'] ? $response['expires_in'] * 2 : env('WX_REDIS_SESSION_EXPIRE');
         $sessionId = Str::random(40);
 
-        $hKey = $this->wx_redis_session_prefix . $sessionId;
+        $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
 
         Redis::hset($hKey, 'openid', $response['openid']);
         Redis::hset($hKey, 'session_key', $response['session_key']);
         Redis::expire($hKey, $expires_in);
 
-        $userModel  = new WxUserModel();
-        $user = [
-            'open_id'   => $response['openid'],
-            'sex'       => $sex,
-            'province'  => $province,
-            'city'      => $city,
-            'phone'     => $phone
-        ];
-        $userModel->saveOrUpdate($user);
-
         return $this->return_json('success', ['sid'=>$sessionId]);
+    }
+
+
+    public function saveUser(Request $request){
+
+        if(!$request->userInfo){
+            return $this->return_json('error', '获取参数失败');
+        }
+        $encryptedData = $request->encryptedData;
+        $appid = env('WX_APPID');
+
+        $sessionId = $request->header('p-sid');
+        $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
+        $session_key    = Redis::hget($hKey, 'session_key');
+
+        $iv = $request->iv;
+
+        $wxCrypt = new WxBizDataCrypt();
+        $wxCrypt->WXBizDataCrypt($appid, $session_key);
+
+        $result = $wxCrypt->decryptData($encryptedData, $iv, $userInfo);
+
+        if($result !== 1){
+            return $this->return_json('error', '数据解密失败');
+        }
+
+        $userParams = [
+            'open_id'   => $userInfo->openId,
+            'gender'    => $userInfo->gender,
+            'country'   => $userInfo->country,
+            'province'  => $userInfo->province,
+            'city'      => $userInfo->city,
+            'avatar_url'=> $userInfo->avatarUrl,
+            'nick_name' => $userInfo->nickName,
+        ];
+
+        $userModel  = new WxUserModel();
+        $status = $userModel->saveOrUpdate($userParams);
+        if($status){
+            return $this->return_json('success', '保存成功');
+        }else{
+            return $this->return_json('error', '保存失败');
+        }
+
     }
 
     public function getUser($openid){

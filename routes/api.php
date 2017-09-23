@@ -22,5 +22,6 @@ Route::get('/area/getProvince', 'AreaController@getProvince');
 Route::get('/area/getCity/{id}', 'AreaController@getCity');
 Route::get('/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
 
-Route::post('/wx/get-session-key', 'WxLoginController@getSessionKey');
+Route::get('/wx/get-session-key/{code}', 'WxLoginController@getSessionKey');
 Route::get('/wx/get-user/{openid}', 'WxLoginController@getUser');
+Route::post('/wx/save-user', 'WxLoginController@saveUser');
