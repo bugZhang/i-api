@@ -16,8 +16,6 @@ class BankController extends Controller
         }
         $openid = $request->wx_openid;
 
-        $openid = $openid ? $openid : 'JXBIUtE5vl3lpOy6IcwVI8BNCC6yjln7gHK6Lm2c';
-
         $bankModel  = new BankModel();
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
         if($banks){
@@ -37,7 +35,7 @@ class BankController extends Controller
                 $temp['address'] = $bank->address;
                 $temp['code'] = $bank->code;
                 $temp['id'] = $bank->id;
-                if(in_array($bank->code, $returnData['collects'])){
+                if($returnData['collects'] && in_array($bank->code, $returnData['collects'])){
                     $temp['is_collect'] = 1;
                 }else{
                     $temp['is_collect'] = 0;
