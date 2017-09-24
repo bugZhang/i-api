@@ -29,3 +29,4 @@ Route::post('/wx/save-user', 'WxLoginController@saveUser');
 Route::get('/wx/bank/collect/get', 'WxBankCollectController@getUserCollect');  //获取用户收藏
 Route::get('/wx/bank/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
 Route::get('/wx/bank/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
+Route::get('/wx/img/get/random', 'AreaController@getRandomImg');

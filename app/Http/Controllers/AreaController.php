@@ -121,4 +121,19 @@ class AreaController extends Controller
             return $this->return_json('error', '未查询到数据');
         }
     }
+
+    public function getRandomImg(){
+
+        $urls = [
+            'http://images.kelenews.com/wx/imags/random/timg.jpeg',
+            'http://images.kelenews.com/wx/imags/random/123123.jpeg'
+        ];
+        $seed = rand(0, (count($urls) - 1));
+        $url = $urls[$seed];
+        $type = pathinfo($url, PATHINFO_EXTENSION);
+        $image = file_get_contents($url);
+        header("Content-type: image/" . $type);
+        echo $image;
+        die();
+    }
 }
