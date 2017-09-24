@@ -129,8 +129,12 @@ class AreaController extends Controller
 //            'http://images.kelenews.com/wx/imags/random/123123.jpeg',
             'http://images.kelenews.comwx/imags/random/1opasdf23.jpg'
         ];
-        $seed = rand(0, (count($urls) - 1));
-        $url = $urls[$seed];
+        if(count($urls) == 1){
+            $url = $urls[0];
+        }else{
+            $seed = rand(0, (count($urls) - 1));
+            $url = $urls[$seed];
+        }
         $type = pathinfo($url, PATHINFO_EXTENSION);
         $image = file_get_contents($url);
         header("Content-type: image/" . $type);
