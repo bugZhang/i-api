@@ -35,7 +35,7 @@ class BankController extends Controller
                 $temp['address'] = $bank->address;
                 $temp['code'] = $bank->code;
                 $temp['id'] = $bank->id;
-                if($returnData['collects'] && in_array($bank->code, $returnData['collects'])){
+                if(isset($returnData['collects']) && in_array($bank->code, $returnData['collects'])){
                     $temp['is_collect'] = 1;
                 }else{
                     $temp['is_collect'] = 0;
