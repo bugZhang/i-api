@@ -60,10 +60,9 @@ class WxBankCollectController extends Controller
         if($collectCount >= $this->collectMaxCount){
             return $this->return_json('over', '最多只能收藏' . $this->collectMaxCount . '条记录');
         }
-
         $collect = $wxCollectModel->selectCollectByOpenidAndBankCode($openid, $bankCode);
         if($collect){
-            $this->return_json('repeat', '本条记录已存在');
+            return $this->return_json('repeat', '本条记录已存在');
         }else{
             $result = $wxCollectModel->addCollect($openid, $bankCode);
             if($result){
