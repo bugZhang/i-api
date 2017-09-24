@@ -125,8 +125,9 @@ class AreaController extends Controller
     public function getRandomImg(){
 
         $urls = [
-            'http://images.kelenews.com/wx/imags/random/timg.jpeg',
-            'http://images.kelenews.com/wx/imags/random/123123.jpeg'
+//            'http://images.kelenews.com/wx/imags/random/timg.jpeg',
+//            'http://images.kelenews.com/wx/imags/random/123123.jpeg',
+            'http://images.kelenews.comwx/imags/random/1opasdf23.jpg'
         ];
         $seed = rand(0, (count($urls) - 1));
         $url = $urls[$seed];
