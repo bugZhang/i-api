@@ -127,7 +127,7 @@ class AreaController extends Controller
         $urls = [
 //            'http://images.kelenews.com/wx/imags/random/timg.jpeg',
 //            'http://images.kelenews.com/wx/imags/random/123123.jpeg',
-            'http://images.kelenews.comwx/imags/random/1opasdf23.jpg'
+            'http://images.kelenews.com/wx/imags/random/1opasdf23.jpg'
         ];
         if(count($urls) == 1){
             $url = $urls[0];
