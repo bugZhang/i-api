@@ -4,21 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Model\WxBankCollectModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class WxBankCollectController extends Controller
 {
-    //
 
     private $collectMaxCount = 5;
 
-    public function getUserCollect($openid){
-        if(!$openid){
-            $this->return_json('error', '参数错误');
+    public function getUserCollect(Request $request){
+        $sessionId   = $request->header('p-sid');
+        if(!$sessionId){
+            return $this->return_json('error', '参数错误');
         }
-
+        $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
+        $openid = Redis::hget($hKey, 'openid');
+        if(!$openid){
+            return $this->return_json('error', '登陆过期');
+        }
         $wxCollectModel = new WxBankCollectModel();
         $banks = $wxCollectModel->selectCollectByOpenid($openid);
-        var_dump($banks->count());
+        if($banks){
+            return $this->return_json('success', $banks->toArray());
+        }else{
+            return $this->return_json('empty', '未找到数据');
+        }
     }
 
     public function deleteUserCollect(Request $request, $bankCode){

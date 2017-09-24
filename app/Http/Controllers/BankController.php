@@ -15,6 +15,9 @@ class BankController extends Controller
             $city = $province;
         }
         $openid = $request->wx_openid;
+
+        $openid = $openid ? $openid : 'JXBIUtE5vl3lpOy6IcwVI8BNCC6yjln7gHK6Lm2c';
+
         $bankModel  = new BankModel();
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
         if($banks){
@@ -33,7 +36,9 @@ class BankController extends Controller
                 $wxCollectModel = new WxBankCollectModel();
                 $collectCodes = $wxCollectModel->selectCollectBankCodeByOpenid($openid);
                 if($collectCodes){
-                    $returnData['collects'] = $collectCodes;
+                    foreach ($collectCodes as $coll){
+                        $returnData['collects'][] = $coll->bank_code;
+                    }
                 }
             }
             return $this->return_json('success', $returnData);

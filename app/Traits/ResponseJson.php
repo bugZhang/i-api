@@ -14,6 +14,9 @@ trait ResponseJson{
                 $data['status']	= $status;
                 $data['info'] 	= $args[1];
             }
+            if(is_object($args[1])){
+                $args[1] = (array) $args[1];
+            }
             if(is_array($args[1])){
 //                $data = array_merge($data, $args[1]);
                 $data['data'] = $args[1];

@@ -15,7 +15,6 @@ class WxBankCollectModel extends Model
         if(!$openid){
             return 0;
         }
-
         $result = $this->leftJoin('bank_branch_online', 'wx_bank_collect.bank_code', '=', 'bank_branch_online.code')
             ->where('wx_bank_collect.open_id', '=', $openid)
             ->select('open_id', 'bank_code', 'name')
