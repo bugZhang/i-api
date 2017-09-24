@@ -22,16 +22,6 @@ class BankController extends Controller
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
         if($banks){
             $returnData = [];
-            foreach ($banks as $bank){
-                $temp = [];
-                $temp['name'] = $bank->name;
-                $temp['address'] = $bank->address;
-                $temp['code'] = $bank->code;
-                $temp['id'] = $bank->id;
-                $data[] = $temp;
-            }
-            $returnData['banks'] = $data;
-            $returnData['count'] = $banks->count();
             if($openid){
                 $wxCollectModel = new WxBankCollectModel();
                 $collectCodes = $wxCollectModel->selectCollectBankCodeByOpenid($openid);
@@ -41,6 +31,23 @@ class BankController extends Controller
                     }
                 }
             }
+            foreach ($banks as $bank){
+                $temp = [];
+                $temp['name'] = $bank->name;
+                $temp['address'] = $bank->address;
+                $temp['code'] = $bank->code;
+                $temp['id'] = $bank->id;
+                if(in_array($bank->code, $returnData['collects'])){
+                    $temp['is_collect'] = 1;
+                }else{
+                    $temp['is_collect'] = 0;
+                }
+
+                $data[] = $temp;
+            }
+            $returnData['banks'] = $data;
+            $returnData['count'] = $banks->count();
+
             return $this->return_json('success', $returnData);
 
         }else{
