@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\DB;
 
 class BankModel extends Model
 {
+    protected $table = 'bank_branch_online';
+    public $timestamps = false;
+
     public function selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page = 1){
 
         if(!$page || $page < 1){
@@ -21,12 +24,12 @@ class BankModel extends Model
         if($city){
             $condition[] = ['cityName', '=', $city];
         }
-        $banks = DB::table('bank_branch_online')->where($condition)
+        $banks = $this->where($condition)
             ->select('id', 'code', 'name', 'address')
             ->offset($offset)
             ->limit($limit)
             ->get();
-        return $banks && count($banks) > 0 ? $banks : false;
+        return $banks && $banks->count() ? $banks : false;
     }
 
 }

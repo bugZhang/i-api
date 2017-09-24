@@ -24,9 +24,6 @@ class CheckWxSession
             $rawData = $request->header('rawData');
             $signature = $request->header('signature');
             $hKey = env('WX_REDIS_SESSION_PREFIX') . $sid;
-
-
-
             if($rawData && $signature){
                 $sessionKey    = Redis::hget($hKey, 'session_key');
                 $signature2    = sha1($rawData . $sessionKey);
@@ -35,6 +32,7 @@ class CheckWxSession
                 }
             }
             $expires_in = env('WX_REDIS_SESSION_EXPIRE');
+            $request->wx_openid = Redis::hget($hKey, 'openid');
             Redis::expire($hKey, $expires_in);
         }
         return $next($request);
