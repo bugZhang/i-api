@@ -21,8 +21,8 @@ class CheckWxSession
     {
         $sid = $request->header('p-sid');
         if($sid){
-            $rawData = $request->header('rawData');
-            $signature = $request->header('signature');
+            $rawData = $request->input('rawData');
+            $signature = $request->input('signature');
             $hKey = env('WX_REDIS_SESSION_PREFIX') . $sid;
             if($rawData && $signature){
                 $sessionKey    = Redis::hget($hKey, 'session_key');
