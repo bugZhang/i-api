@@ -125,9 +125,11 @@ class AreaController extends Controller
     public function getRandomImg(){
 
         $urls = [
-//            'http://images.kelenews.com/wx/imags/random/timg.jpeg',
-//            'http://images.kelenews.com/wx/imags/random/123123.jpeg',
-            'http://images.kelenews.com/wx/imags/random/1opasdf23.jpg'
+            'http://images.kelenews.com/wx/imags/random/6869ca96dd72d1717e4e98dfef0e4ce6.jpg',
+            'http://images.kelenews.com/wx/imags/random/d42eb358fd228431704c68a53b3c3b2c.jpg',
+            'http://images.kelenews.com/wx/imags/random/05ee20a4977e564b60f2fe38538294f1.jpg',
+            'http://images.kelenews.com/wx/imags/random/3a1e235e04a14cf5a8f0e7ed330e08c9.jpg',
+            'http://images.kelenews.com/wx/imags/random/1opasdf23.jpg',
         ];
         if(count($urls) == 1){
             $url = $urls[0];
