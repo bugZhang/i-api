@@ -15,5 +15,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/service/area/saveProvinces', 'AreaController@saveProvinces');
-Route::get('/service/area/saveCitys', 'AreaController@saveCitys');
+Route::get('/haha/test', 'TestController@test');
