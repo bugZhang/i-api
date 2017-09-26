@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->call(function(){
             Mail::to('670033395@qq.com')->send(new BackupData());
-        })->dailyAt('17:55');
+        })->dailyAt('17:25');
     }
 
     /**
