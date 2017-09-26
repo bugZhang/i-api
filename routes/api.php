@@ -30,3 +30,5 @@ Route::get('/wx/bank/collect/get', 'WxBankCollectController@getUserCollect');  /
 Route::get('/wx/bank/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
 Route::get('/wx/bank/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
 Route::get('/wx/img/get/random', 'AreaController@getRandomImg');
+
+Route::get('/kxxx/backup/{sc}', 'BackupController@sendMail');
