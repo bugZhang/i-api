@@ -28,6 +28,7 @@ class BackupData extends Mailable
      */
     public function build()
     {
+        set_time_limit(0);
 //        return $this->view('view.name');
 //        return $this->view('welcome');
         return $this->view('welcome')->attach('/usr/local/src/backup/Data.tar.gz');
