@@ -94,4 +94,13 @@ class WxLoginController extends Controller
 
     }
 
+    public function checkPsid(Request $request){
+        if($request->wx_openid){
+            $this->return_json('success', 'OK');
+        }else{
+            $this->return_json('nologin', 'expire');
+        }
+
+    }
+
 }
