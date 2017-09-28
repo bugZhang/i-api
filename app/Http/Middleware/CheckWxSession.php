@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Traits\ResponseJson;
 use App\Utils\WxBizDataCrypt;
 use Closure;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class CheckWxSession
@@ -33,6 +34,9 @@ class CheckWxSession
             }
             $expires_in = env('WX_REDIS_SESSION_EXPIRE');
             $request->wx_openid = Redis::hget($hKey, 'openid');
+            if(!$request->wx_openid){
+                Log::error('缓存中未找到openid');
+            }
             Redis::expire($hKey, $expires_in);
         }
         return $next($request);
