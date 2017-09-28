@@ -12,6 +12,6 @@ class TestController extends Controller
     //
     public function test(){
 //        Redis::set('asdf', 'asd11111f');
-       echo  Redis::get('asdf');
+//       echo  Redis::get('asdf');
     }
 }
