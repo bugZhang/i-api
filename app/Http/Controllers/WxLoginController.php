@@ -6,6 +6,7 @@ use App\Model\WxUserModel;
 use App\Service\WxLoginService;
 use App\Utils\WxBizDataCrypt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
@@ -98,6 +99,7 @@ class WxLoginController extends Controller
         if($request->wx_openid){
             return $this->return_json('success', 'OK');
         }else{
+            Log::warning('检查PSID 登陆已经过期了');
             return $this->return_json('nologin', 'expire');
         }
 
