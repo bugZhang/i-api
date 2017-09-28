@@ -98,6 +98,7 @@ class WxLoginController extends Controller
 
     public function checkPsid(Request $request){
         if($request->wx_openid){
+            Log::warning('检查PSID 登陆OK');
             return $this->return_json('success', 'OK');
         }else{
             Log::warning('检查PSID 登陆已经过期了');
