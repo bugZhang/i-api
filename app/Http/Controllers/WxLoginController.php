@@ -90,6 +90,7 @@ class WxLoginController extends Controller
         if($status){
             return $this->return_json('success', '保存成功');
         }else{
+            Log::error('保存用户信息失败' . explode(',', $userParams));
             return $this->return_json('error', '保存失败');
         }
 
