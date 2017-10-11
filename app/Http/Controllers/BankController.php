@@ -19,12 +19,7 @@ class BankController extends Controller
         $openid = $request->wx_openid;
 
         $bankModel  = new BankModel();
-        DB::connection()->enableQueryLog();
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
-        if(!$banks){
-            $queries = DB::getQueryLog();
-            Log::error($queries);
-        }
         if($banks){
             $returnData = [];
             if($openid){
