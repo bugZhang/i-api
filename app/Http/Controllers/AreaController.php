@@ -137,10 +137,12 @@ class AreaController extends Controller
             $seed = rand(0, (count($urls) - 1));
             $url = $urls[$seed];
         }
-        $type = pathinfo($url, PATHINFO_EXTENSION);
-        $image = file_get_contents($url);
-        header("Content-type: image/" . $type);
-        echo $image;
-        die();
+
+        return redirect($url);
+//        $type = pathinfo($url, PATHINFO_EXTENSION);
+//        $image = file_get_contents($url);
+//        header("Content-type: image/" . $type);
+//        echo $image;
+//        die();
     }
 }
