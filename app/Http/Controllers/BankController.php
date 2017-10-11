@@ -21,7 +21,7 @@ class BankController extends Controller
         $bankModel  = new BankModel();
         DB::connection()->enableQueryLog();
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
-        if($banks->count() < 1){
+        if(!$banks){
             $queries = DB::getQueryLog();
             Log::error($queries);
         }
