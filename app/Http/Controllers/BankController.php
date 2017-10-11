@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Model\BankModel;
 use App\Model\WxBankCollectModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BankController extends Controller
 {
@@ -17,7 +19,12 @@ class BankController extends Controller
         $openid = $request->wx_openid;
 
         $bankModel  = new BankModel();
+        DB::connection()->enableQueryLog();
         $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
+        if($banks->count() < 1){
+            $queries = DB::getQueryLog();
+            Log::error($queries);
+        }
         if($banks){
             $returnData = [];
             if($openid){
