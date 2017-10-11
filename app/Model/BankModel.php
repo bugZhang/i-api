@@ -19,12 +19,17 @@ class BankModel extends Model
         $limit = 6;
         $offset = $limit * ($page - 1);
         $condition[] = ['bankCode', '=', $bankCode];
-        $condition[] = ['name', 'like', '%' . $keyword . '%'];
         $condition[] = ['provinceName', '=', $province];
         if($city){
             $condition[] = ['cityName', '=', $city];
         }
         $banks = $this->where($condition)
+            ->where(function($query) use ($keyword){
+                $query->where('name', 'like', '%' . $keyword . '%')
+                    ->orWhere(function($query) use ($keyword){
+                        $query->where('address', 'like', '%' . $keyword . '%');
+                    });
+            })
             ->select('id', 'code', 'name', 'address')
             ->offset($offset)
             ->limit($limit)
