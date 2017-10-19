@@ -20,9 +20,9 @@ class BankModel extends Model
         $offset = $limit * ($page - 1);
         $condition[] = ['bankCode', '=', $bankCode];
         $condition[] = ['provinceName', '=', $province];
-        if($city){
-            $condition[] = ['cityName', '=', $city];
-        }
+//        if($city){
+//            $condition[] = ['cityName', '=', $city];
+//        }
         $banks = $this->where($condition)
             ->where(function($query) use ($keyword){
                 $query->where('name', 'like', '%' . $keyword . '%')
