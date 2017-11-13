@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/area/getProvince', 'AreaController@getProvince');
 Route::get('/area/getCity/{id}', 'AreaController@getCity');
-Route::get('/bank/search/{bankCode}/{province}/{city}/{keyword}/{page?}', 'BankController@getBanks');
+Route::get('/bank/search/{bankCode}/{province}/{keyword}/{page?}', 'BankController@getBanks');
 
 Route::get('/wx/get-session-key/{code}', 'WxLoginController@getSessionKey');
 Route::get('/wx/session/check/psid', 'WxLoginController@checkPsid');
