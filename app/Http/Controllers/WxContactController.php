@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Service\WxContactService;
+use App\Service\WxLoginService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -50,8 +51,13 @@ class WxContactController extends Controller
             ]
         ];
 
+        $loginService = new WxLoginService();
+        $accessToken    = $loginService->getWxAccessToken();
+        if(!$accessToken){
+            return 0;
+        }
         $msgService = new WxContactService();
-        return $msgService->sendMsg($msg);
+        return $msgService->sendMsg($msg, $accessToken);
     }
 
 

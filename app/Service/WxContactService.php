@@ -8,8 +8,11 @@ class WxContactService{
 
     private $wx_contact_send_url = 'https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=';
 
-    public function sendMsg(array $msg){
-        $url = $this->wx_contact_send_url . env('WX_MSG_TOKEN');
+    public function sendMsg(array $msg, $access_token){
+        if(!$access_token){
+            return 0;
+        }
+        $url = $this->wx_contact_send_url . $access_token;
 
         $client = new Client();
         $response = $client->request('POST', $url, ['jons'=>$msg]);
