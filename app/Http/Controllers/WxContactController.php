@@ -47,7 +47,7 @@ class WxContactController extends Controller
             'touser'    => $openId,
             'msgtype'   => 'text',
             'text'      => [
-                'content'   => urlencode($content)
+                'content'   => urldecode($content)
             ]
         ];
 
