@@ -12,7 +12,7 @@ class WxContactController extends Controller
 
         Log::error('开始接收消息');
 
-        Log::info($request);
+        Log::error($request->get('text'));
         if($this->checkSignature($request)){
             Log::error('检查签名通过');
         }else{
