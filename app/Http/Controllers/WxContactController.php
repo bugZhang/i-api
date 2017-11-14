@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\WxContactService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -11,8 +12,6 @@ class WxContactController extends Controller
     public function getMsg(Request $request){
 
         Log::error('开始接收消息');
-        Log::error($request->get('signature'));
-
         Log::error('json', [$request->json('Content')]);
 
         if(!$this->checkSignature($request)){
@@ -25,9 +24,35 @@ class WxContactController extends Controller
         $fromUserName   = $request->json('FromUserName');
         $msgId  = $request->json('MsgId');
         Log::error($toUserName. '   ' . $fromUserName . '  ' . $content . '  ' . $msgId);
+
+        $response = $this->sendTextMsg($fromUserName, '已收到您的消息');
+        Log::error('发送消息状态', [$response]);
+
         echo 'success';
     }
 
+
+    /**
+     * 发送消息给用户
+     * @param $openId
+     * @param $content
+     */
+    private function sendTextMsg($openId, $content){
+
+        if(!$openId || !$content){
+            return false;
+        }
+        $msg = [
+            'touser'    => $openId,
+            'msgtype'   => 'text',
+            'text'      => [
+                'content'   => $content
+            ]
+        ];
+
+        $msgService = new WxContactService();
+        $msgService->sendMsg($msg);
+    }
 
 
 
