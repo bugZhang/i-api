@@ -13,23 +13,18 @@ class WxContactController extends Controller
         Log::error('开始接收消息');
         Log::error($request->get('signature'));
 
-        Log::error('参数', [$request->query()]);
-
         Log::error('json', [$request->json('Content')]);
 
-        Log::error($request->all());
-
-        if($this->checkSignature($request)){
-            Log::error('检查签名通过');
-        }else{
-            Log::error('检查签名失败');
+        if(!$this->checkSignature($request)){
+            Log::error('接收消息 检查签名失败');
+            echo '';die();
         }
 
         $toUserName = $request->json('ToUserName');
-
         $content = $request->json('Content');
-
-        Log::info($toUserName. '   ' . $content);
+        $fromUserName   = $request->json('FromUserName');
+        $msgId  = $request->json('MsgId');
+        Log::error($toUserName. '   ' . $fromUserName . '  ' . $content . '  ' . $msgId);
         echo 'success';
     }
 
