@@ -12,6 +12,13 @@ class WxContactController extends Controller
 
         Log::error('开始接收消息');
 
+        Log::info($request);
+        if($this->checkSignature($request)){
+            Log::error('检查签名通过');
+        }else{
+            Log::error('检查签名失败');
+        }
+
         $toUserName = $request->json('ToUserName');
 
         $content = $request->json('Content');
@@ -25,12 +32,6 @@ class WxContactController extends Controller
 
     private function checkSignature(Request $request)
     {
-
-        if(self::checkSignature($request)){
-            echo $request->get('echostr');
-        }else{
-            echo '';
-        }
 
         $signature = $request->get('signature');
         $timestamp = $request->get('timestamp');
