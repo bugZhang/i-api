@@ -1,19 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
-<<<<<<< HEAD
- * User: Jerry
- * Date: 2017/9/20
- * Time: 下午10:22
-=======
- * User: yixina-d
- * Date: 17/9/21
- * Time: 16:40
->>>>>>> wxapi
- */
-
 namespace App\Service;
-
 
 use GuzzleHttp\Client;
 
