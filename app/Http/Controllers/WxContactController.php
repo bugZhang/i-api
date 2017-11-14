@@ -11,13 +11,11 @@ class WxContactController extends Controller
     public function getMsg(Request $request){
 
         Log::error('开始接收消息');
-
-        Log::error($request->get('text'));
         Log::error($request->get('signature'));
-        Log::error($request->get('timestamp'));
-        Log::error($request->get('nonce'));
-        Log::error($request->get('Content'));
-        Log::error($request->all());
+
+        Log::info('参数', $request->query());
+
+        Log::info('json', $request->json('Content'));
 
         if($this->checkSignature($request)){
             Log::error('检查签名通过');
