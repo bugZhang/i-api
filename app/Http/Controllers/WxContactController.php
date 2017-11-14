@@ -10,13 +10,14 @@ class WxContactController extends Controller
     //
     public function getMsg(Request $request){
 
+        Log::error('开始接收消息');
+
         $toUserName = $request->json('ToUserName');
 
         $content = $request->json('Content');
 
         Log::info($toUserName. '   ' . $content);
         echo 'success';
-
     }
 
 
