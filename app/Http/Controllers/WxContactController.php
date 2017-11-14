@@ -51,7 +51,7 @@ class WxContactController extends Controller
         ];
 
         $msgService = new WxContactService();
-        $msgService->sendMsg($msg);
+        return $msgService->sendMsg($msg);
     }
 
 
