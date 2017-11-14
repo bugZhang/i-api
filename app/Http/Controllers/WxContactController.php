@@ -13,9 +13,9 @@ class WxContactController extends Controller
         Log::error('开始接收消息');
         Log::error($request->get('signature'));
 
-        Log::info('参数', $request->query());
+        Log::info('参数', [$request->query()]);
 
-        Log::info('json', $request->json('Content'));
+        Log::info('json', [$request->json('Content')]);
 
         if($this->checkSignature($request)){
             Log::error('检查签名通过');
