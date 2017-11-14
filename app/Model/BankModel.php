@@ -11,7 +11,7 @@ class BankModel extends Model
     protected $table = 'bank_branch_online';
     public $timestamps = false;
 
-    public function selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page = 1){
+    public function selectBanksByNameAndArea($bankCode, $keyword, $province, $page = 1){
 
         if(!$page || $page < 1){
             $page = 1;
@@ -20,20 +20,29 @@ class BankModel extends Model
         $offset = $limit * ($page - 1);
         $condition[] = ['bankCode', '=', $bankCode];
         $condition[] = ['provinceName', '=', $province];
-//        if($city){
-//            $condition[] = ['cityName', '=', $city];
-//        }
-        $banks = $this->where($condition)
-            ->where(function($query) use ($keyword){
-                $query->where('name', 'like', '%' . $keyword . '%')
-                    ->orWhere(function($query) use ($keyword){
-                        $query->where('address', 'like', '%' . $keyword . '%');
-                    });
-            })
-            ->select('id', 'code', 'name', 'address')
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
+
+        if(is_numeric($keyword)){
+            $condition = [];
+            $condition[] = ['code', '=', $keyword];
+            $banks = $this->where($condition)
+                ->select('id', 'code', 'name', 'address')
+                ->offset($offset)
+                ->limit($limit)
+                ->get();
+        }else{
+            $banks = $this->where($condition)
+                ->where(function($query) use ($keyword){
+                    $query->where('name', 'like', '%' . $keyword . '%')
+                        ->orWhere(function($query) use ($keyword){
+                            $query->where('address', 'like', '%' . $keyword . '%');
+                        });
+                })
+                ->select('id', 'code', 'name', 'address')
+                ->offset($offset)
+                ->limit($limit)
+                ->get();
+        }
+
         return $banks && $banks->count() ? $banks : false;
     }
 

@@ -11,15 +11,12 @@ use Illuminate\Support\Facades\Log;
 class BankController extends Controller
 {
 
-    public function getBanks(Request $request, $bankCode, $province, $city, $keyword, $page = 1){
+    public function getBanks(Request $request, $bankCode, $province, $keyword, $page = 1){
 
-        if(in_array($province, ['天津市', '重庆市', '北京市', '上海市'])){
-            $city = $province;
-        }
         $openid = $request->wx_openid;
 
         $bankModel  = new BankModel();
-        $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $city, $page);
+        $banks = $bankModel->selectBanksByNameAndArea($bankCode, $keyword, $province, $page);
         if($banks){
             $returnData = [];
             if($openid){
