@@ -3,21 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WxContactController extends Controller
 {
     //
     public function getMsg(Request $request){
 
-        if(self::checkSignature($request)){
-            echo $request->get('echostr');
-        }else{
-            echo 'error';
-        }
+        $toUserName = $request->json('ToUserName');
+
+        $content = $request->json('Content');
+
+        Log::info($toUserName. '   ' . $content);
+        echo 'success';
+
     }
+
+
+
 
     private function checkSignature(Request $request)
     {
+
+        if(self::checkSignature($request)){
+            echo $request->get('echostr');
+        }else{
+            echo '';
+        }
+
         $signature = $request->get('signature');
         $timestamp = $request->get('timestamp');
         $nonce      = $request->get('nonce');
