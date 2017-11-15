@@ -22,8 +22,9 @@ class WxContactController extends Controller
         $content = $request->json('Content');
         $fromUserName   = $request->json('FromUserName');
         $msgId  = $request->json('MsgId');
-
-        $response = $this->sendTextMsg($fromUserName, '已收到您的消息，谢谢您的反馈');
+        if($content){
+            $response = $this->sendTextMsg($fromUserName, '已收到您的消息，谢谢您的反馈');
+        }
         Log::error('发送消息状态', [$response]);
 
         echo 'success';
