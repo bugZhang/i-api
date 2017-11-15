@@ -27,7 +27,6 @@ class WxContactController extends Controller
         $picUrl = $request->json('PicUrl');
 
         if($content){
-            Log::error($msgId);
             $msg = [
                 'id'            => $msgId,
                 'to_user_name'  => $toUserName,
