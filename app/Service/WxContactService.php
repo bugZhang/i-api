@@ -35,7 +35,7 @@ class WxContactService{
         }
         $url = $this->wx_contact_send_url . $access_token;
         Log::error($url);
-        $response = $this->doHttpRequest($url, 'post', $msg);
+        $response = $this->doHttpRequest($url, 'post', json_encode($msg));
         return $response;
     }
 
