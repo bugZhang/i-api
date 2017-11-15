@@ -12,9 +12,7 @@ class WxContactController extends Controller
     //
     public function getMsg(Request $request){
 
-        Log::error('开始接收消息');
         Log::error('json', [$request->json('Content')]);
-
         if(!$this->checkSignature($request)){
             Log::error('接收消息 检查签名失败');
             echo '';die();
@@ -24,14 +22,12 @@ class WxContactController extends Controller
         $content = $request->json('Content');
         $fromUserName   = $request->json('FromUserName');
         $msgId  = $request->json('MsgId');
-        Log::error($toUserName. '   ' . $fromUserName . '  ' . $content . '  ' . $msgId);
 
-        $response = $this->sendTextMsg($fromUserName, '已收到您的消息');
+        $response = $this->sendTextMsg($fromUserName, '已收到您的消息，谢谢您的反馈');
         Log::error('发送消息状态', [$response]);
 
         echo 'success';
     }
-
 
     /**
      * 发送消息给用户
@@ -59,8 +55,6 @@ class WxContactController extends Controller
         $msgService = new WxContactService();
         return $msgService->sendMsg($msg, $accessToken);
     }
-
-
 
     private function checkSignature(Request $request)
     {
