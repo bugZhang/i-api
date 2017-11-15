@@ -14,7 +14,12 @@ class WxContactService{
         $url = $this->wx_contact_send_url . $access_token;
 
         $client = new Client();
-        $response = $client->request('POST', $url, ['query'=>json_encode($msg, JSON_UNESCAPED_UNICODE)]);
+        $response = $client->request('POST', $url, [
+            'headers' => [
+                'Content-Type'     => 'application/json',
+            ],
+            'query' => json_encode($msg, JSON_UNESCAPED_UNICODE)
+        ]);
         if($response->getStatusCode() == '200'){
             $data = $response->getBody();
             $data = json_decode($data, true);
