@@ -23,7 +23,6 @@ class WxContactController extends Controller
         $fromUserName   = $request->json('FromUserName');
         $msgId  = $request->json('MsgId');
 
-        Log::error('消息', [$content]);
         if($content){
             $response = $this->sendTextMsg($fromUserName, '已收到您的消息，谢谢您的反馈');
         }
