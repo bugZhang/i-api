@@ -25,9 +25,8 @@ class WxContactController extends Controller
 
         if($content){
             $response = $this->sendTextMsg($fromUserName, '已收到您的消息，谢谢您的反馈');
+            Log::error('发送消息状态', [$response]);
         }
-        Log::error('发送消息状态', [$response]);
-
         echo 'success';
     }
 
