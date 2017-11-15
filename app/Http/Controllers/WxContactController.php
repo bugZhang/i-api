@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\WxMsgModel;
 use App\Service\WxContactService;
 use App\Service\WxLoginService;
 use Illuminate\Http\Request;
@@ -22,8 +23,19 @@ class WxContactController extends Controller
         $content = $request->json('Content');
         $fromUserName   = $request->json('FromUserName');
         $msgId  = $request->json('MsgId');
+        $msgType = $request->json('MsgType');
+        $picUrl = $request->json('PicUrl');
 
         if($content){
+            $msg = [
+                'id'            => $msgId,
+                'to_user_name'  => $toUserName,
+                'from_user_name'=> $fromUserName,
+                'msg_type'      => $msgType,
+                'content'       => $content ? $content : ($picUrl ? $picUrl : '')
+            ];
+            $wxMsgModel = new WxMsgModel();
+            $wxMsgModel->saveMsg($msg);
             $response = $this->sendTextMsg($fromUserName, '已收到您的消息，谢谢您的反馈');
             Log::error('发送消息状态', [$response]);
         }
