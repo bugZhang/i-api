@@ -3,6 +3,7 @@ namespace App\Service;
 
 use App\Traits\HttpClient;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class WxContactService{
 
@@ -33,6 +34,7 @@ class WxContactService{
             return 0;
         }
         $url = $this->wx_contact_send_url . $access_token;
+        Log::error($url);
         $response = $this->doHttpRequest($url, 'post', $msg);
         return $response;
     }
