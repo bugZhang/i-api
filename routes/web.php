@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 Route::get('/haha/test', 'TestController@test');
+
+Route::get('/tbk/items/get', 'TaobaoController@getItems');
