@@ -19,3 +19,4 @@ Route::get('/haha/test', 'TestController@test');
 
 Route::get('/tbk/items/get', 'TaobaoController@getItems');
 Route::get('/tbk/share/pwd', 'TaobaoController@sharePwd');
+Route::get('/tbk/favourites/{favouriteId}/{page?}', 'TaobaoController@getFavouriteItems');

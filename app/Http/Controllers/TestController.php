@@ -53,7 +53,6 @@ class TestController extends Controller
 //        var_export($resp);
 
 
-
 //        $req = new \TbkUatmFavoritesGetRequest();
 //        $req->setPageNo("1");
 //        $req->setPageSize("20");
@@ -62,14 +61,12 @@ class TestController extends Controller
 //        var_export($resp);
 
 
-
-
         $req = new \TbkUatmFavoritesItemGetRequest();
         $req->setPlatform("2");
         $req->setPageSize("20");
-        $req->setAdzoneId("");
+        $req->setAdzoneId("128300260");
         $req->setUnid("wechat");
-        $req->setFavoritesId("");
+        $req->setFavoritesId("14618601");
         $req->setPageNo("1");
         $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick,shop_title,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,type");
         $resp = $c->execute($req);
