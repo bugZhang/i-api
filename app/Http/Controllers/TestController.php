@@ -10,8 +10,8 @@ class TestController extends Controller
     public function test(){
 
         $c = new \TopClient();
-        $c->appkey = '';
-        $c->secretKey = '';
+        $c->appkey = env('TBK_APPID');
+        $c->secretKey = env('TBK_SECRET');
         $c->format='json';
 //        $c->platform = 2;
 
@@ -26,16 +26,14 @@ class TestController extends Controller
 
 
 
-        $req = new \WirelessShareTpwdCreateRequest();
-        $tpwd_param = new \GenPwdIsvParamDto();
-//        $tpwd_param->ext="{\"xx\":\"xx\"}";
-        $tpwd_param->logo="http://img3.tbcdn.cn/tfscom/i1/3378282306/TB1iRZlc8fH8KJjy1XbXXbLdXXa_!!0-item_pic.jpg";
-        $tpwd_param->url="http://item.taobao.com/item.htm?id=559275604024";
-        $tpwd_param->text="超值活动，惊喜活动多多";
-//        $tpwd_param->user_id="24234234234";
-        $req->setTpwdParam(json_encode($tpwd_param));
-        $resp = $c->execute($req);
-        var_export($resp);die();
+//        $req = new \WirelessShareTpwdCreateRequest();
+//        $tpwd_param = new \GenPwdIsvParamDto();
+//        $tpwd_param->logo="http://img3.tbcdn.cn/tfscom/i1/3378282306/TB1iRZlc8fH8KJjy1XbXXbLdXXa_!!0-item_pic.jpg";
+//        $tpwd_param->url="http://item.taobao.com/item.htm?id=559275604024";
+//        $tpwd_param->text="超值活动，惊喜活动多多";
+//        $req->setTpwdParam(json_encode($tpwd_param));
+//        $resp = $c->execute($req);
+//        var_export($resp);die();
 
 
 //        $req = new \TbkTpwdCreateRequest;
@@ -46,6 +44,36 @@ class TestController extends Controller
 ////        $req->setExt("{}");
 //        $resp = $c->execute($req);
 //        var_export($resp);
+
+
+
+//        $req = new \WirelessShareTpwdQueryRequest();
+//        $req->setPasswordContent("我剁手都要买的宝贝（绿林手工热熔胶枪大号小号塑料玻璃热熔枪送热溶胶棒包邮20W-100W），快来和我一起瓜分红I包】http://a.nfi0.com/h.x8TyYx 点击链接，再选择浏览器打开；或复制这条信息￥0QEm0i3Qzmo￥后打开👉手淘👈");
+//        $resp = $c->execute($req);
+//        var_export($resp);
+
+
+
+//        $req = new \TbkUatmFavoritesGetRequest();
+//        $req->setPageNo("1");
+//        $req->setPageSize("20");
+//        $req->setFields("favorites_title,favorites_id,type");
+//        $resp = $c->execute($req);
+//        var_export($resp);
+
+
+
+
+        $req = new \TbkUatmFavoritesItemGetRequest();
+        $req->setPlatform("2");
+        $req->setPageSize("20");
+        $req->setAdzoneId("");
+        $req->setUnid("wechat");
+        $req->setFavoritesId("");
+        $req->setPageNo("1");
+        $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick,shop_title,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,type");
+        $resp = $c->execute($req);
+        var_export($resp);
 
     }
 }

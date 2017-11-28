@@ -29,10 +29,30 @@ class TaobaoController extends Controller
         $req->setQ("女装");
         $req->setPageSize("20");
         $resp = $this->topClient->execute($req);
-        var_export($resp);
     }
 
-    public function sharePwd(){
+    public function sharePwd(Request $request){
+        $logo = $request->input('logo');
+        $title  = $request->input('title');
+        $url    = $request->input('url');
+
+
+    }
+
+    public function queryPwd(Request $request){
+
+    }
+
+
+    private function getFavouriteList(){
+
+        $req = new \TbkUatmFavoritesGetRequest();
+        $req->setPageNo("1");
+        $req->setPageSize("20");
+        $req->setFields("favorites_title,favorites_id,type");
+//        $req->setType("1");
+        $resp = $this->topClient->execute($req);
+        var_export($resp);
 
     }
 
