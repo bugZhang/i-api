@@ -16,6 +16,9 @@ class TaobaoController extends Controller
         self::setTopClient();
     }
 
+    public function test(){
+        $this->getFavouriteList();
+    }
 
     private function setTopClient(){
         if(!$this->topClient){
@@ -37,9 +40,9 @@ class TaobaoController extends Controller
         $title  = $request->input('title');
         $url    = $request->input('url');
 
-        $logo = 'http://img4.tbcdn.cn/tfscom/i1/3074135292/TB24qNhdL2H8KJjy1zkXXXr7pXa_!!3074135292.jpg';
-        $title = '心逸原木30包抽纸整箱婴儿面巾纸纸巾家庭装餐巾纸卫生纸纸抽批发';
-        $url = 'http://h5.m.taobao.com/awp/core/detail.htm?id=553070734386';
+        $logo = 'https://img.alicdn.com/imgextra/i4/1688086223/TB2_jTgXz3z9KJjy0FmXXXiwXXa_!!1688086223.jpg_430x430q90.jpg';
+        $title = '疆域果园 陕西特产零食富平柿饼子柿子干500克柿子饼包邮散装批发';
+        $url = 'http://detail.tmall.com/item.htm?id=539964018434';
 
         $pwd = $this->createPwd($url, $title, $logo);
         if($pwd){
@@ -60,8 +63,20 @@ class TaobaoController extends Controller
         $req->setPageNo($page);
         $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick,shop_title,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,type");
         $resp = $this->topClient->execute($req);
+        var_export($resp);
     }
 
+    public function getCouponItems(){
+        $req = new \TbkDgItemCouponGetRequest();
+        $req->setAdzoneId($this->ad_zoneId);
+        $req->setPlatform("2");
+//        $req->setCat("16,18");
+        $req->setPageSize("20");
+        $req->setQ("富平柿饼");
+        $req->setPageNo(1);
+        $resp = $this->topClient->execute($req);
+        var_export($resp);
+    }
 
     private function getFavouriteList(){
         $req = new \TbkUatmFavoritesGetRequest();
