@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class TaobaoController extends Controller
 {
@@ -40,9 +41,9 @@ class TaobaoController extends Controller
         $title  = $request->input('title');
         $url    = $request->input('url');
 
-        $logo = 'https://img.alicdn.com/imgextra/i4/1688086223/TB2_jTgXz3z9KJjy0FmXXXiwXXa_!!1688086223.jpg_430x430q90.jpg';
-        $title = '疆域果园 陕西特产零食富平柿饼子柿子干500克柿子饼包邮散装批发';
-        $url = 'http://detail.tmall.com/item.htm?id=539964018434';
+        $logo = 'http://img1.tbcdn.cn/tfscom/i2/749309273/TB2c19mzxtmpuFjSZFqXXbHFpXa_!!749309273.jpg';
+        $title = '特级无核山楂圈零食无籽去籽无糖山楂干中心圈中药材泡茶500g包邮';
+        $url = 'https://uland.taobao.com/coupon/edetail?e=vEYe%2BsAXOy8GQASttHIRqb5wJn5M5xeMORFRYj99i%2FYOH4xMRYRCNmH1qvx5ArxuoxtOCp1lYzWjC%2FhQv7OdIZQ5wfGz%2Fu%2BNGLN3c5IKM9PuVKWFTfoNZg%3D%3D';
 
         $pwd = $this->createPwd($url, $title, $logo);
         if($pwd){
@@ -54,16 +55,30 @@ class TaobaoController extends Controller
     }
 
     public function getFavouriteItems($favouriteId, $page){
-        $req = new \TbkUatmFavoritesItemGetRequest();
-        $req->setPlatform("2");
-        $req->setPageSize("20");
-        $req->setAdzoneId($this->ad_zoneId);
-        $req->setUnid("wechat");
-        $req->setFavoritesId($favouriteId);
-        $req->setPageNo($page);
-        $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick,shop_title,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,type");
-        $resp = $this->topClient->execute($req);
-        var_export($resp);
+        $favourite_items_key = 'tbk_favourite_items:' . $favouriteId . ':' . $page;
+
+        $items = Redis::get($favourite_items_key);
+        if($items){
+            $items = json_decode(unserialize($items));
+            return $this->return_json('success', $items);
+        }else{
+            $req = new \TbkUatmFavoritesItemGetRequest();
+            $req->setPlatform("2");
+            $req->setPageSize("20");
+            $req->setAdzoneId($this->ad_zoneId);
+            $req->setUnid("wechat");
+            $req->setFavoritesId($favouriteId);
+            $req->setPageNo($page);
+            $req->setFields("num_iid,title,pict_url,reserve_price,zk_final_price,user_type,item_url,volume,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,coupon_click_url,click_url,type,coupon_info");
+            $resp = $this->topClient->execute($req);
+            if(!$resp && isset($resp->code)){
+                return $this->return_json('error', '未查询到数据');
+            }else{
+                Redis::set($favourite_items_key, serialize(json_encode($resp->results->uatm_tbk_item, true)));
+                Redis::expire($favourite_items_key, 60 * 30);
+                return $this->return_json('success', $resp->results->uatm_tbk_item);
+            }
+        }
     }
 
     public function getCouponItems(){
@@ -88,7 +103,20 @@ class TaobaoController extends Controller
         var_export($resp);
     }
 
-    private function getItemInfo($num_iids, $platform = 2){
+    public function getItemInfo($id){
+        $this->getItemInfoById($id);
+    }
+    public function queryPwdFromPwd(Request $request){
+        $content = $request->input('content');
+        $content = "我剁手都要买的宝贝（绿林手工热熔胶枪大号小号塑料玻璃热熔枪送热溶胶棒包邮20W-100W），快来和我一起瓜分红I包】http://a.nfi0.com/h.x8TyYx 点击链接，再选择浏览器打开；或复制这条信息￥0QEm0i3Qzmo￥后打开👉手淘👈";
+
+        $url = $this->queryPwd($content);
+        $query = parse_url($url);
+        parse_str($query['query'], $params);
+        var_dump($params['id']);
+    }
+
+    private function getItemInfoById($num_iids, $platform = 2){
         $req = new \TbkItemInfoGetRequest();
         $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url");
         $req->setPlatform($platform);
@@ -98,21 +126,26 @@ class TaobaoController extends Controller
     }
 
     private function createPwd($url, $text, $logo){
-        $req = new \WirelessShareTpwdCreateRequest();
-        $tpwd_param = new \GenPwdIsvParamDto();
-        $tpwd_param->logo = $logo;
-        $tpwd_param->url = $url;
-        $tpwd_param->text = $text;
-        $req->setTpwdParam(json_encode($tpwd_param));
+        $req = new \TbkTpwdCreateRequest();
+        $req->setText($text);
+        $req->setUrl($url);
+        $req->setLogo($logo);
         $resp = $this->topClient->execute($req);
         if(!$resp || isset($resp->code)){
             return 0;
         }else{
-            return $resp->model;
+            return $resp->data->model;
         }
     }
 
-    private function queryPwd(){
-
+    private function queryPwd($content){
+        $req = new \WirelessShareTpwdQueryRequest();
+        $req->setPasswordContent($content);
+        $resp = $this->topClient->execute($req);
+        if(!$resp || isset($resp->code)){
+            return 0;
+        }else{
+            return $resp->url;
+        }
     }
 }
