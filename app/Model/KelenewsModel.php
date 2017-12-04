@@ -18,7 +18,12 @@ class KelenewsModel extends Model
                 ['post_type', '=', 'post']
             ])
             ->select()->limit(10)->latest('post_date_gmt')->get();
+    }
 
+    public function selectPostById($postId){
+        return $this->from('wp_posts')->where([
+            ['ID', '=', $postId]
+        ])->first();
     }
 
 }

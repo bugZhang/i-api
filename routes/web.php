@@ -22,6 +22,8 @@ Route::get('/tbk/items/get', 'TaobaoController@getItems');
 Route::get('/tbk/share/pwd', 'TaobaoController@sharePwd');
 Route::get('/tbk/favourites/{favouriteId}/{page?}', 'TaobaoController@getFavouriteItems');
 Route::get('/tbk/coupon/get', 'TaobaoController@getCouponItems');
-Route::get('/kelenews/posts', 'KelenewsController@getPosts');
 Route::get('/tbk/item/{id}', 'TaobaoController@getItemInfo');
 Route::get('/tbk/pwd/query', 'TaobaoController@queryPwdFromPwd');
+
+Route::get('/kelenews/post/list', 'KelenewsController@getPosts');
+Route::get('/kelenews/post/get/{postId}', 'KelenewsController@getPost');
