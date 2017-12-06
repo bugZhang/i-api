@@ -11,11 +11,18 @@ class KelenewsController extends Controller
     public function getPosts($page){
         $kelenewsModel  = new KelenewsModel();
         $posts = $kelenewsModel->selectAllPostsByPage($page ? $page : 1);
-        if($posts->count()){
+        if(count($posts)){
 
+            $allTags = $kelenewsModel->selectAllTags()->toArray();
             foreach ($posts as $post){
                 $post->post_excerpt = $this->getPostExcerpt($post);
                 $post->post_date = date('Y-m-d', strtotime($post->post_date));
+
+                $postTags = $kelenewsModel->selectPostTags($post->ID);
+                if($postTags){
+                    $post_tags = $this->getPostTagsName($postTags->toArray(), $allTags);
+                    $post->post_tags = implode(',', $post_tags);
+                }
             }
             return $this->return_json('success', $posts->toArray());
         }else{
@@ -29,8 +36,6 @@ class KelenewsController extends Controller
             return $this->return_json('error', 'id不能为空');
         }
         $kelenewsModel  = new KelenewsModel();
-        $tags = $kelenewsModel->selectAllTags();
-        var_dump($tags);die();
 
         $post = $kelenewsModel->selectPostById($postId);
 
@@ -40,12 +45,22 @@ class KelenewsController extends Controller
             $post->post_content = preg_replace('/<img([^>]+>)/i', '<img width="100%" $1', $post->post_content);
         }
 
+        $post->post_date = date('Y-m-d', strtotime($post->post_date));
+
         if($post->is_video = $kelenewsModel->isVideoFormat($postId)){
-            preg_match('/<video.*?src=(".*?")/i', $post->post_content, $matchs);
+            preg_match('/<video.*?src="(.*?)"/i', $post->post_content, $matchs);
             if($matchs){
                 $post->video_src = $matchs[1];
             }
             $post->post_content = preg_replace('/<video.*?video>/i', '', $post->post_content);
+        }
+        $postTags = $kelenewsModel->selectPostTags($postId);
+        if(count($postTags)){
+            $allTags = $kelenewsModel->selectAllTags()->toArray();
+            $post_tags = $this->getPostTagsName($postTags->toArray(), $allTags);
+            if($postTags){
+                $post->post_tags = implode(',', $post_tags);
+            }
         }
 
         return $this->return_json('success', $post->toArray());
@@ -60,6 +75,17 @@ class KelenewsController extends Controller
         }else{
             return $this->return_json('error', '参数错误');
         }
+    }
+
+    private function getPostTagsName($postTags, $allTags){
+        $allTags = array_column($allTags, 'name', 'term_id');
+        $tagNames = [];
+        foreach ($postTags as $tag){
+            if(isset($allTags[$tag['term_taxonomy_id']])){
+                $tagNames[] = $allTags[$tag['term_taxonomy_id']];
+            }
+        }
+        return $tagNames;
     }
 
     private function getPostExcerpt($post, $length = 300){

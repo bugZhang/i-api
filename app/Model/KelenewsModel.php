@@ -13,14 +13,24 @@ class KelenewsModel extends Model
 
     private $re_key_view_count = 'kelenew_view_count';
 
-    public function selectAllPostsByPage($pageNum = 1){
+    public function selectAllPostsByPage($page = 1){
+
+        if(!$page || $page < 1){
+            $page = 1;
+        }
+        $limit = 6;
+        $offset = $limit * ($page - 1);
 
         return $this->from('wp_posts')
             ->where([
                 ['post_status', '=', 'publish'],
                 ['post_type', '=', 'post']
             ])
-            ->select()->limit(10)->latest('post_date_gmt')->get();
+            ->select()
+            ->offset($offset)
+            ->limit($limit)
+            ->latest('post_date_gmt')
+            ->get();
     }
 
     public function selectPostById($postId){
@@ -29,15 +39,20 @@ class KelenewsModel extends Model
         ])->first();
     }
 
-    public function selectAllTags(){
+    public function selectPostTags($postId){
+        return $this->from('wp_term_relationships')
+            ->where('object_id', '=', $postId)
+            ->select('term_taxonomy_id')
+            ->get();
+    }
 
+    public function selectAllTags(){
         $tags = $this->from('wp_terms')
             ->join('wp_term_taxonomy', 'wp_term_taxonomy.term_id' ,'=', 'wp_terms.term_id')
             ->where('wp_term_taxonomy.taxonomy', '=', 'post_tag')
-            ->select()
+            ->select('wp_terms.term_id', 'wp_terms.name')
             ->get();
         return $tags;
-
     }
 
 
