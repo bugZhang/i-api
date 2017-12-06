@@ -29,6 +29,34 @@ class KelenewsModel extends Model
         ])->first();
     }
 
+    public function selectAllTags(){
+
+        $tags = $this->from('wp_terms')
+            ->join('wp_term_taxonomy', 'wp_term_taxonomy.term_id' ,'=', 'wp_terms.term_id')
+            ->where('wp_term_taxonomy.taxonomy', '=', 'post_tag')
+            ->select()
+            ->get();
+        return $tags;
+
+    }
+
+
+    public function isVideoFormat($postId){
+
+        $termId = $this->from('wp_term_relationships')
+            ->join('wp_terms', 'wp_term_relationships.term_taxonomy_id', '=', 'wp_terms.term_id')
+            ->where([
+                ['wp_terms.name', '=' , 'post-format-video'],
+                ['wp_term_relationships.object_id', '=', $postId]
+            ])
+            ->select('term_id')
+            ->get();
+
+        return count($termId) ? true : false;
+    }
+
+
+
     public function increatViewCount($postId){
         return Redis::hIncrBy($this->re_key_view_count, $postId, 1);
     }

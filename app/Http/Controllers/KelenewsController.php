@@ -29,11 +29,23 @@ class KelenewsController extends Controller
             return $this->return_json('error', 'id不能为空');
         }
         $kelenewsModel  = new KelenewsModel();
+        $tags = $kelenewsModel->selectAllTags();
+        var_dump($tags);die();
 
         $post = $kelenewsModel->selectPostById($postId);
 
         if(count($post)){
+            $post->post_content = preg_replace('/(<img.*?)width=".*?"/i', '$1', $post->post_content);
+            $post->post_content = preg_replace('/(<img.*?)style=".*?"/i', '$1', $post->post_content);
             $post->post_content = preg_replace('/<img([^>]+>)/i', '<img width="100%" $1', $post->post_content);
+        }
+
+        if($post->is_video = $kelenewsModel->isVideoFormat($postId)){
+            preg_match('/<video.*?src=(".*?")/i', $post->post_content, $matchs);
+            if($matchs){
+                $post->video_src = $matchs[1];
+            }
+            $post->post_content = preg_replace('/<video.*?video>/i', '', $post->post_content);
         }
 
         return $this->return_json('success', $post->toArray());
