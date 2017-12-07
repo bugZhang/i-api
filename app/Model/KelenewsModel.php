@@ -71,7 +71,6 @@ class KelenewsModel extends Model
     }
 
 
-
     public function increatViewCount($postId){
         return Redis::hIncrBy($this->re_key_view_count, $postId, 1);
     }

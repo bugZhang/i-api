@@ -11,6 +11,7 @@ class KelenewsController extends Controller
     public function getPosts($page){
         $kelenewsModel  = new KelenewsModel();
         $posts = $kelenewsModel->selectAllPostsByPage($page ? $page : 1);
+
         if(count($posts)){
 
             $allTags = $kelenewsModel->selectAllTags()->toArray();
@@ -18,12 +19,23 @@ class KelenewsController extends Controller
                 $post->post_excerpt = $this->getPostExcerpt($post);
                 $post->post_date = date('Y-m-d', strtotime($post->post_date));
 
+                preg_match('/<img.*?src="(.*?)"/i', $post->post_content, $matchs);
+                if($matchs){
+                    $post->thumb_pic = $matchs[1];
+                }
+
                 $postTags = $kelenewsModel->selectPostTags($post->ID);
                 if($postTags){
                     $post_tags = $this->getPostTagsName($postTags->toArray(), $allTags);
                     $post->post_tags = implode(',', $post_tags);
                 }
+
+                if($viewCount = $kelenewsModel->getViewCount($post->ID)){
+                    $post->view_count = $viewCount;
+                }
+
             }
+
             return $this->return_json('success', $posts->toArray());
         }else{
             return $this->return_json('error', '未查询到数据');
@@ -63,18 +75,14 @@ class KelenewsController extends Controller
             }
         }
 
+        $kelenewsModel->increatViewCount($postId);
+
+        if($viewCount = $kelenewsModel->getViewCount($post->ID)){
+            $post->view_count = $viewCount;
+        }
+
         return $this->return_json('success', $post->toArray());
 
-    }
-
-    public function increatCount($postId){
-        if($postId){
-            $kelenewsModel  = new KelenewsModel();
-            $count = $kelenewsModel->increatViewCount($postId);
-            return $this->return_json('success', $count);
-        }else{
-            return $this->return_json('error', '参数错误');
-        }
     }
 
     private function getPostTagsName($postTags, $allTags){
