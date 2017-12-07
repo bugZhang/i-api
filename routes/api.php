@@ -34,3 +34,8 @@ Route::get('/wx/img/get/random', 'AreaController@getRandomImg');
 Route::post('/wx/contact/get', 'WxContactController@getMsg');
 
 Route::get('/kxxx/backup/{sc}', 'BackupController@sendMail');
+
+
+Route::get('/kelenews/post/increat/{postId}', 'KelenewsController@increatCount');
+Route::get('/kelenews/post/list/{page}', 'KelenewsController@getPosts');
+Route::get('/kelenews/post/get/{postId}', 'KelenewsController@getPost');
