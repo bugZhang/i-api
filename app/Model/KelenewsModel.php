@@ -11,7 +11,7 @@ class KelenewsModel extends Model
     protected $connection = 'kelenews';
     public $timestamps = false;
 
-    private $re_key_view_count = 'kelenew_view_count';
+    private $re_key_view_count = 'kelenews_view_count';
 
     public function selectAllPostsByPage($page = 1){
 
