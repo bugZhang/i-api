@@ -55,6 +55,24 @@ class KelenewsModel extends Model
         return $tags;
     }
 
+    /**
+     * 查询有多少页
+     * @return float|int
+     */
+    public function selectPageCount(){
+        $limit = 6;
+
+        $postIds = $this->from('wp_posts')
+            ->where([
+                ['post_status', '=', 'publish'],
+                ['post_type', '=', 'post']
+            ])
+            ->select('ID')
+            ->get();
+        return count($postIds) ? ceil(count($postIds) / $limit): 0;
+
+    }
+
 
     public function isVideoFormat($postId){
 

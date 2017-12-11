@@ -35,7 +35,8 @@ Route::post('/wx/contact/get', 'WxContactController@getMsg');
 
 Route::get('/kxxx/backup/{sc}', 'BackupController@sendMail');
 
-
 Route::get('/kelenews/post/increat/{postId}', 'KelenewsController@increatCount');
 Route::get('/kelenews/post/list/{page}', 'KelenewsController@getPostsFromCache');
 Route::get('/kelenews/post/get/{postId}', 'KelenewsController@getPost');
+Route::get('/kelenews/post/flush/{k}/{postId?}', 'KelenewsController@flushPosts');
+

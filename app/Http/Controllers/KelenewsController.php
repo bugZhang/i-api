@@ -21,7 +21,6 @@ class KelenewsController extends Controller
         $post_list_cache_key = $this->cache_kelenews_list . $page;
 
         if(Cache::has($post_list_cache_key)){
-
             $arrPosts = Cache::get($post_list_cache_key);
             if($arrPosts){
                 return $this->return_json('success', $arrPosts);
@@ -56,7 +55,7 @@ class KelenewsController extends Controller
                 }
 
                 $arrPosts = $posts->toArray();
-                Cache::put($post_list_cache_key, $arrPosts, 30);   //minutes
+                Cache::put($post_list_cache_key, $arrPosts, 60 * 24);   //minutes  缓存一天
                 return $this->return_json('success', $arrPosts);
             }else{
                 return $this->return_json('error', '未查询到数据');
@@ -138,6 +137,31 @@ class KelenewsController extends Controller
         }
         $content = strip_tags($post->post_content);
         return Helper::substr($content, 0, $length);
+    }
+
+
+    public function flushPosts($k, $postId = ''){
+
+        if($k != env('KELENEWS_FLUSH_TOKEN')){
+            return $this->return_json('error', "what're u doing?");
+        }
+
+        if($postId){
+            if(Cache::has($this->cache_kelenews_post . $postId)){
+                Cache::forget($this->cache_kelenews_post . $postId);
+            }
+        }else{
+            $kelenewsModel  = new KelenewsModel();
+            $pages = $kelenewsModel->selectPageCount();
+            if($pages){
+                for($i = 1; $i <= $pages; $i++){
+                    if(Cache::has($this->cache_kelenews_list . $i)){
+                        Cache::forget($this->cache_kelenews_list . $i);
+                    }
+                }
+            }
+        }
+        return $this->return_json('success', '操作成功');
     }
 
 }

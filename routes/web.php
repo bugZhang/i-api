@@ -28,3 +28,4 @@ Route::get('/tbk/pwd/query', 'TaobaoController@queryPwdFromPwd');
 //Route::get('/kelenews/post/increat/{postId}', 'KelenewsController@increatCount');
 //Route::get('/kelenews/post/list/{page}', 'KelenewsController@getPostsFromCache');
 //Route::get('/kelenews/post/get/{postId}', 'KelenewsController@getPost');
+//Route::get('/kelenews/post/flush/{k}/{postId?}', 'KelenewsController@flushPosts');
