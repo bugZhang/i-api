@@ -49,9 +49,9 @@ class KelenewsController extends Controller
                         $post->post_tags = implode(',', $post_tags);
                     }
 
-                    if($viewCount = $kelenewsModel->getViewCount($post->ID)){
-                        $post->view_count = $viewCount;
-                    }
+//                    if($viewCount = $kelenewsModel->getViewCount($post->ID)){
+//                        $post->view_count = $viewCount;
+//                    }
                 }
 
                 $arrPosts = $posts->toArray();
@@ -70,15 +70,20 @@ class KelenewsController extends Controller
         }
         $cache_key = $this->cache_kelenews_post . $postId;
 
+        $kelenewsModel  = new KelenewsModel();
         if(Cache::has($cache_key)){
             $arrPost = Cache::get($cache_key);
             if($arrPost){
+                $kelenewsModel->increatViewCount($postId);
+                if($viewCount = $kelenewsModel->getViewCount($postId)){
+                    $arrPost['view_count'] = $viewCount;
+                }
+
                 return $this->return_json('success', $arrPost);
             }else{
                 return $this->return_json('error', '未查询到数据');
             }
         }else{
-            $kelenewsModel  = new KelenewsModel();
             $post = $kelenewsModel->selectPostById($postId);
 
             if(count($post)){
@@ -162,6 +167,28 @@ class KelenewsController extends Controller
             }
         }
         return $this->return_json('success', '操作成功');
+    }
+
+    public function getImpressionCount(Request $request){
+        $postIds = $request->input('ids');
+        if($postIds){
+            $kelenewsModel  = new KelenewsModel();
+            $results = $kelenewsModel->getViewCountGroup($postIds);
+            $impressions = [];
+            if($results){
+                foreach ($postIds as $n => $postId){
+                    $impressions[$postId] = $results[$n] ? $results[$n] : 0;
+                }
+            }
+            if($impressions){
+                return $this->return_json('success', $impressions);
+            }else{
+                return $this->return_json('nodata', '为查找到数据');
+            }
+
+        }else{
+            return $this->return_json('error' ,'参数错误');
+        }
     }
 
 }
