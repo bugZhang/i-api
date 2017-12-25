@@ -98,7 +98,9 @@ class WxLoginController extends Controller
 
 
     public function getMyZhi(){
-        return $this->return_json('success', ['zhi'=>'JVvPOf10At 0011111']);
+        return $this->return_json('success', ['zhi'=>'测试测试  JVvPOf10At']);
+
+//        return $this->return_json('error', ['zhi'=>'测试测试  JVvPOf10At']);
     }
 
     public function checkPsid(Request $request){
