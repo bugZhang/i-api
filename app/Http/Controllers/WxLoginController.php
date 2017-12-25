@@ -96,6 +96,11 @@ class WxLoginController extends Controller
 
     }
 
+
+    public function getMyZhi(){
+        return $this->return_json('success', ['zhi'=>'JVvPOf10At 0011111']);
+    }
+
     public function checkPsid(Request $request){
         if($request->wx_openid){
             Log::warning('检查PSID 登陆OK');
