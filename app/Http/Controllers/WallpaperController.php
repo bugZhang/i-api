@@ -17,14 +17,7 @@ class WallpaperController extends Controller
 
         if ($wallpapers) {
             $wallpapers = $wallpapers->toArray();
-            foreach ($wallpapers as $i => $wallpaper) {
-                if ($i % 2 == 0) {
-                    $left[] = $wallpaper;
-                } else {
-                    $right[] = $wallpaper;
-                }
-            }
-            return $this->return_json('success', ['left' => $left, 'right' => $right]);
+            return $this->return_json('success', $wallpapers);
         }
 
     }
