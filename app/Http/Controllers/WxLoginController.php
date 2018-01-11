@@ -99,13 +99,12 @@ class WxLoginController extends Controller
 
     public function getMyZhi(){
 
-        if(time() > 1315729600){
-            if(time() / 2 == 0){
+        if(time() > 1515729600){
+            if(time() % 2 == 0){
                 $zhi = 'YRnUkJ35l2';
             }else{
                 $zhi = 'JVvPOf10At';
             }
-
             return $this->return_json('success', ['zhi'=>$zhi]);
         }else{
             return $this->return_json('error', ['data'=>'测试测试']);
