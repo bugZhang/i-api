@@ -21,6 +21,8 @@ class BankModel extends Model
         $condition[] = ['bankCode', '=', $bankCode];
         $condition[] = ['provinceName', '=', $province];
 
+        $this->saveKeyword($keyword);
+
         if(is_numeric($keyword)){
             $condition = [];
             $condition[] = ['code', '=', $keyword];
@@ -44,6 +46,12 @@ class BankModel extends Model
         }
 
         return $banks && $banks->count() ? $banks : false;
+    }
+
+    public function saveKeyword($keyword){
+        if(!$keyword){
+            $this->from('wx_search_keyword')->insert(['content' => $keyword]);
+        }
     }
 
 }

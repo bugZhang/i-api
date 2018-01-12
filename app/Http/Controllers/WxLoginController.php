@@ -96,7 +96,6 @@ class WxLoginController extends Controller
 
     }
 
-
     public function getMyZhi(){
 
         if(time() > 1505729600){
