@@ -49,7 +49,7 @@ class BankModel extends Model
     }
 
     public function saveKeyword($keyword){
-        if(!$keyword){
+        if($keyword){
             $this->from('wx_search_keyword')->insert(['content' => $keyword]);
         }
     }
