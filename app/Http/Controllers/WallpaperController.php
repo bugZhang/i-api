@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\WallpaperModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 class WallpaperController extends Controller
 {
@@ -11,15 +13,89 @@ class WallpaperController extends Controller
 
     public function getList(Request $request)
     {
+        $page = $request->page;
+        $type = $request->type;
+        if($type != WallpaperModel::TYPE_GIRL
+            && $type != WallpaperModel::TYPE_BOY
+            && $type != WallpaperModel::TYPE_SCENE
+        ){
+            return $this->return_json('error');
+
+        }
 
         $model = new WallpaperModel();
-        $wallpapers = $model->getListByType(WallpaperModel::TYPE_GIRL);
+        $wallpapers = $model->getListByType($type, $page, '', 4);
 
         if ($wallpapers) {
             $wallpapers = $wallpapers->toArray();
-            return $this->return_json('success', $wallpapers);
+            foreach ($wallpapers as $wallpaper){
+                $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
+                $data[] = $wallpaper;
+            }
+            return $this->return_json('success', $data);
+        }else{
+            return $this->return_json('error');
         }
 
+    }
+
+    public function uploadWallpaper(Request $request){
+
+        $file = $request->file('wallpaper');
+        $type = $request->type;
+        $pwd = $request->pwd;
+
+        if ($file) {
+            $mimeType = $file->getMimeType();
+            if($mimeType == 'image/gif'){
+                $extension = 'gif';
+            }elseif ($mimeType == 'image/jpeg'){
+                $extension = 'jpg';
+            }elseif ($mimeType == 'image/png'){
+                $extension = 'png';
+            }else{
+                return $this->return_json('error', '文件格式错误');
+            }
+
+            if($file->getSize() > (1024 * 8000)){
+                return $this->return_json('error', '文件太大');
+            }
+            $filename = uniqid() . '.' . $extension;
+            $hash_code = hash_file('md5', $file->getRealPath());
+            $path = $request->wallpaper->storeAs('', $filename, 'public_' . $type . '_uploads');
+            if($path){
+                $model = new WallpaperModel();
+                $model->addOne($type, $filename, $hash_code);
+            }
+        }
+        return redirect('/haha/test/admin/' . $type);
+    }
+
+    public function deleteWallpaper(Request $request){
+        $id = $request->wid;
+        $type = $request->type;
+        $pwd = $request->pwd;
+
+        if($id && $type){
+            $model = new WallpaperModel();
+            $wallpaper = $model->getOne($id);
+            if($model->deleteOne($id)){
+                Storage::disk('public_' . $type . '_uploads')->delete($wallpaper->filename);
+                return $this->return_json('success');
+            }else{
+                return $this->return_json('error');
+            }
+        }else{
+            return $this->return_json('error');
+        }
+    }
+
+    public function managerView(Request $request){
+        $type = $request->type;
+        $page = $request->page;
+        $model  = new WallpaperModel();
+        $wallpapers = $model->getListByType($type, $page);
+        return view('wallpaper', ['wallpapers' => $wallpapers, 'type'=>$type]);
     }
 
 }

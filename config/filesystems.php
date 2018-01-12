@@ -62,6 +62,18 @@ return [
             'region' => env('AWS_REGION'),
             'bucket' => env('AWS_BUCKET'),
         ],
+        'public_girl_uploads' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/image/wallpaper/girl',
+        ],
+        'public_boy_uploads' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/image/wallpaper/boy',
+        ],
+        'public_scene_uploads' => [
+            'driver' => 'local',
+            'root'   => public_path() . '/image/wallpaper/scene',
+        ],
 
     ],
 

@@ -16,6 +16,9 @@ Route::get('/', function () {
 });
 
 Route::get('/haha/test', 'TestController@test');
+Route::get('/haha/test/admin/{type}/{page?}', 'WallpaperController@managerView');
+Route::get('/haha/test/papa', 'WallpaperController@deleteWallpaper');
+Route::post('/haha/test/gogo', 'WallpaperController@uploadWallpaper');
 
 Route::get('/tbk/test', 'TaobaoController@test');
 Route::get('/tbk/items/get', 'TaobaoController@getItems');
