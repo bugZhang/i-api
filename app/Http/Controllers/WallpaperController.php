@@ -24,7 +24,7 @@ class WallpaperController extends Controller
         }
 
         $model = new WallpaperModel();
-        $wallpapers = $model->getListByType($type, $page, '', 6;
+        $wallpapers = $model->getListByType($type, $page, '', 6);
 
         if ($wallpapers) {
             $wallpapers = $wallpapers->toArray();
