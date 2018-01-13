@@ -44,4 +44,4 @@ Route::post('/kelenews/impression/get', 'KelenewsController@getImpressionCount')
 
 
 Route::get('/wallpaper/list/{type}/{page?}', 'WallpaperController@getList');
-Route::get('/wallpaper/get/{id}', 'WallpaperController@getPostsFromCache');
+Route::get('/wallpaper/get/{type}/{wid}', 'WallpaperController@getWallpaper');

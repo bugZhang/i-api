@@ -36,6 +36,19 @@ class WallpaperController extends Controller
         }else{
             return $this->return_json('error');
         }
+    }
+
+    public function getWallpaper($type, $wid){
+        $model  = new WallpaperModel();
+        $wallpaper = $model->getOne($wid);
+        if($wallpaper){
+            $wallpaper   = $wallpaper->toArray();
+            $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
+            return $this->return_json('success', $wallpaper);
+        }else{
+            return $this->return_json('error');
+        }
+
 
     }
 
