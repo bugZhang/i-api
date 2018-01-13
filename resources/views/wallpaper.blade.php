@@ -84,7 +84,8 @@
             var that = $(this);
             var id = that.attr('wp-id');
             var type = "{{$type}}";
-            $.get('/haha/test/papa', {'wid':id, 'type':type}, function(d){
+            var pwd = $('#inputPassword2').val();
+            $.get('/haha/test/papa', {'wid':id, 'type':type, 'pwd':pwd}, function(d){
                 if(d.status == 'success'){
                     that.parents('.wallpaper-block').remove();
                 }else{

@@ -58,6 +58,10 @@ class WallpaperController extends Controller
         $type = $request->type;
         $pwd = $request->pwd;
 
+        if(!$pwd || $pwd != env('MY_WALLPAPER_KEY')){
+           return $this->return_json('error');
+        }
+
         if ($file) {
             $mimeType = $file->getMimeType();
             if($mimeType == 'image/gif'){
@@ -88,6 +92,9 @@ class WallpaperController extends Controller
         $id = $request->wid;
         $type = $request->type;
         $pwd = $request->pwd;
+        if(!$pwd || $pwd != env('MY_WALLPAPER_KEY')){
+            return $this->return_json('error');
+        }
 
         if($id && $type){
             $model = new WallpaperModel();
