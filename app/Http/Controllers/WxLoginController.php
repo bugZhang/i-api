@@ -98,7 +98,7 @@ class WxLoginController extends Controller
 
     public function getMyZhi(){
 
-        if(time() > 1505729600){
+        if(time() > 1516032000){
             if(time() % 2 == 0){
                 $zhi = 'YRnUkJ35l2';
             }else{
