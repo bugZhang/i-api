@@ -43,7 +43,9 @@ class WallpaperController extends Controller
         $wallpaper = $model->getOne($wid);
         if($wallpaper){
             $wallpaper   = $wallpaper->toArray();
-            $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
+//            http://wallpaper.kelenews.com/image/wallpaper/girl/5a5a139e36b65.jpg
+            $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
+//            $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
             return $this->return_json('success', $wallpaper);
         }else{
             return $this->return_json('error');
