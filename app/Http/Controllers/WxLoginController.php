@@ -96,9 +96,10 @@ class WxLoginController extends Controller
 
     }
 
-    public function getMyZhi(){
+    public function getMyZhi(Request $request){
 
-        if(time() > 1516204800){
+        $sid = $request->header('p-sid');
+        if($sid){
             if(time() % 2 == 0){
                 $zhi = 'YRnUkJ35l2';
             }else{
@@ -108,7 +109,6 @@ class WxLoginController extends Controller
         }else{
             return $this->return_json('error', ['data'=>'测试测试']);
         }
-
 //        return $this->return_json('error', ['data'=>'测试测试']);
     }
 
