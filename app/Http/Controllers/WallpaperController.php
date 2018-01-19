@@ -46,6 +46,7 @@ class WallpaperController extends Controller
             $wallpaper   = $wallpaper->toArray();
             $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
 //            $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
+            $model->addImpression($wallpaper['id']);
             return $this->return_json('success', $wallpaper);
         }else{
             return $this->return_json('error');

@@ -26,7 +26,7 @@ class WallpaperModel extends Model{
     }
 
     public function addImpression($id){
-
+        return $this->where('id', '=', $id)->increment('impression');
     }
 
     public function getListByType($type, $page, $sort = 'new', $limit = 6){
