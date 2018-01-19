@@ -29,9 +29,9 @@ class WallpaperController extends Controller
         if ($wallpapers) {
             $wallpapers = $wallpapers->toArray();
             foreach ($wallpapers as $wallpaper){
-                $wallpaper['src_slim'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-5.slim';
-                $wallpaper['src_original'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
-//                $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
+//                $wallpaper['src_slim'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-5.slim';
+//                $wallpaper['src_original'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
+                $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
                 $data[] = $wallpaper;
             }
             return $this->return_json('success', $data);
