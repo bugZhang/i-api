@@ -29,7 +29,8 @@ class WallpaperController extends Controller
         if ($wallpapers) {
             $wallpapers = $wallpapers->toArray();
             foreach ($wallpapers as $wallpaper){
-                $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-5.slim';
+                $wallpaper['src_slim'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-5.slim';
+                $wallpaper['src_original'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
 //                $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
                 $data[] = $wallpaper;
             }
@@ -46,7 +47,6 @@ class WallpaperController extends Controller
             $wallpaper   = $wallpaper->toArray();
             $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
 //            $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
-            $model->addImpression($wallpaper['id']);
             return $this->return_json('success', $wallpaper);
         }else{
             return $this->return_json('error');
@@ -117,6 +117,14 @@ class WallpaperController extends Controller
         $model  = new WallpaperModel();
         $wallpapers = $model->getListByType($type, $page);
         return view('wallpaper', ['wallpapers' => $wallpapers, 'type'=>$type]);
+    }
+
+    public function addImpression(Request $request){
+        $id = $request->wid;
+        if($id){
+            $model  = new WallpaperModel();
+            $model->addImpression($id);
+        }
     }
 
 }
