@@ -29,7 +29,7 @@ class WallpaperController extends Controller
         if ($wallpapers) {
             $wallpapers = $wallpapers->toArray();
             foreach ($wallpapers as $wallpaper){
-                $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-slim.img';
+                $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-5.slim';
 //                $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
                 $data[] = $wallpaper;
             }
@@ -50,8 +50,6 @@ class WallpaperController extends Controller
         }else{
             return $this->return_json('error');
         }
-
-
     }
 
     public function uploadWallpaper(Request $request){
