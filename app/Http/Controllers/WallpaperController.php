@@ -32,7 +32,6 @@ class WallpaperController extends Controller
                 $wallpaper['src_slim'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'] . '-5.slim';
                 $wallpaper['src_original'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
                 $wallpaper['src'] = 'http://wallpaper.kelenews.com/image/wallpaper/' .$type . '/' . $wallpaper['filename'];
-                $wallpaper['src_original'] = $wallpaper['src'];
 //                $wallpaper['src'] = URL::asset('image/wallpaper/' . $type . '/' . $wallpaper['filename']);
                 $data[] = $wallpaper;
             }
