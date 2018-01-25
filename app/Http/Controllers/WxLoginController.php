@@ -98,6 +98,7 @@ class WxLoginController extends Controller
 
     public function getMyZhi(Request $request){
 
+        return $this->return_json('error', ['data'=>'测试测试']);
         $t = $request->input('t');
         $seed = time() % 3;
         if($t != 'b'){
