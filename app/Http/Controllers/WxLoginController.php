@@ -99,20 +99,19 @@ class WxLoginController extends Controller
     public function getMyZhi(Request $request){
 
         $t = $request->input('t');
-
-        $sid = $request->header('p-sid');
-        $sid = false;
-        if($sid){
-            if(time() % 2 == 0){
-                $zhi = 'YRnUkJ35l2';
+        $seed = time() % 3;
+        if($t != 'b'){
+            if($seed == 1){
+                return $this->return_json('success', ['zhi'=>'YRnUkJ35l2']);
+            }elseif ($seed == 2){
+                return $this->return_json('success', ['zhi'=>'JVvPOf10At']);
             }else{
-                $zhi = 'JVvPOf10At';
+                return $this->return_json('error', ['data'=>'测试测试']);
             }
-            return $this->return_json('success', ['zhi'=>$zhi]);
         }else{
             return $this->return_json('error', ['data'=>'测试测试']);
         }
-//        return $this->return_json('error', ['data'=>'测试测试']);
+
     }
 
     public function checkPsid(Request $request){
