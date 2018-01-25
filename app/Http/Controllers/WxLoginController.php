@@ -97,8 +97,12 @@ class WxLoginController extends Controller
     }
 
     public function getMyZhi(Request $request){
+
         $t = $request->input('t');
-        if($t != 'b'){
+
+        $sid = $request->header('p-sid');
+        $sid = false;
+        if($sid){
             if(time() % 2 == 0){
                 $zhi = 'YRnUkJ35l2';
             }else{
