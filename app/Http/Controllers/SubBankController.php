@@ -11,9 +11,9 @@ class SubBankController extends Controller
 
         $params['bank_code'] = $request->query('bank_code');
         $params['bank_name'] = $request->query('bank_name');
-        $params['province_code'] = $request->query('province_code');
+        $params['province_id'] = $request->query('province_id');
         $params['province_name'] = $request->query('province_name');
-        $params['city_code'] = $request->query('city_code');
+        $params['city_id'] = $request->query('city_id');
         $params['city_name'] = $request->query('city_name');
         if(empty($params['bank_code'])){
             return $this->return_json('error');
