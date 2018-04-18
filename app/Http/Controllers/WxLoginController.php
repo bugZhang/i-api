@@ -99,7 +99,7 @@ class WxLoginController extends Controller
     public function getMyZhi(Request $request){
 
         $t = $request->input('t');
-        $t = 'n';
+        $t = 'b';
         $seed = time() % 3;
         if($t != 'b'){
             if($seed == 1){
