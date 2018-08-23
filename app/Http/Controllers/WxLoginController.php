@@ -103,11 +103,11 @@ class WxLoginController extends Controller
         $seed = time() % 3;
         if($t != 'b'){
             if($seed == 1){
-                return $this->return_json('success', ['zhi'=>'YRnUkJ35l2']);
+                return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
             }elseif ($seed == 2){
-                return $this->return_json('success', ['zhi'=>'JVvPOf10At']);
+                return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
             }else{
-                return $this->return_json('success', ['zhi'=>'muSzcP10TN']);
+                return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
             }
         }else{
             return $this->return_json('error', ['data'=>'测试测试']);
