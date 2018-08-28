@@ -99,14 +99,15 @@ class WxLoginController extends Controller
     public function getMyZhi(Request $request){
 
         $t = $request->input('t');
-        $seed = time() % 3;
-        if($t != 'b'){
+        if($t != 'c'){    //如果是b 则不显示
+            $seed = time() % 3;
             if($seed == 1){
                 return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
             }elseif ($seed == 2){
                 return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
             }else{
-                return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
+                // return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
+                return $this->return_json('error', ['data'=>'测试测试']);
             }
         }else{
             return $this->return_json('error', ['data'=>'测试测试']);
