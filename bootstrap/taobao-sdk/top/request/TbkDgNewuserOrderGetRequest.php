@@ -1,44 +1,55 @@
 <?php
 /**
- * TOP API: taobao.tbk.ju.tqg.get request
+ * TOP API: taobao.tbk.dg.newuser.order.get request
  * 
  * @author auto create
- * @since 1.0, 2018.07.25
+ * @since 1.0, 2018.07.24
  */
-class TbkJuTqgGetRequest
+class TbkDgNewuserOrderGetRequest
 {
 	/** 
-	 * 推广位id（推广位申请方式：http://club.alimama.com/read.php?spm=0.0.0.0.npQdST&tid=6306396&ds=1&page=1&toread=1）
+	 * 活动id， 活动名称与活动ID列表，请参见https://tbk.bbs.taobao.com/detail.html?appId=45301&postId=8599277
+	 **/
+	private $activityId;
+	
+	/** 
+	 * mm_xxx_xxx_xxx的第三位
 	 **/
 	private $adzoneId;
 	
 	/** 
-	 * 最晚开团时间
+	 * 结束时间，当活动为淘宝活动，表示最晚结束时间；当活动为支付宝活动，表示最晚绑定时间；当活动为天猫活动，表示最晚领取红包的时间
 	 **/
 	private $endTime;
 	
 	/** 
-	 * 需返回的字段列表
-	 **/
-	private $fields;
-	
-	/** 
-	 * 第几页，默认1，1~100
+	 * 页码，默认1
 	 **/
 	private $pageNo;
 	
 	/** 
-	 * 页大小，默认40，1~40
+	 * 页大小，默认20，1~100
 	 **/
 	private $pageSize;
 	
 	/** 
-	 * 最早开团时间
+	 * 开始时间，当活动为淘宝活动，表示最早注册时间；当活动为支付宝活动，表示最早绑定时间；当活动为天猫活动，表示最早领取红包时间
 	 **/
 	private $startTime;
 	
 	private $apiParas = array();
 	
+	public function setActivityId($activityId)
+	{
+		$this->activityId = $activityId;
+		$this->apiParas["activity_id"] = $activityId;
+	}
+
+	public function getActivityId()
+	{
+		return $this->activityId;
+	}
+
 	public function setAdzoneId($adzoneId)
 	{
 		$this->adzoneId = $adzoneId;
@@ -59,17 +70,6 @@ class TbkJuTqgGetRequest
 	public function getEndTime()
 	{
 		return $this->endTime;
-	}
-
-	public function setFields($fields)
-	{
-		$this->fields = $fields;
-		$this->apiParas["fields"] = $fields;
-	}
-
-	public function getFields()
-	{
-		return $this->fields;
 	}
 
 	public function setPageNo($pageNo)
@@ -107,7 +107,7 @@ class TbkJuTqgGetRequest
 
 	public function getApiMethodName()
 	{
-		return "taobao.tbk.ju.tqg.get";
+		return "taobao.tbk.dg.newuser.order.get";
 	}
 	
 	public function getApiParas()
@@ -118,10 +118,9 @@ class TbkJuTqgGetRequest
 	public function check()
 	{
 		
-		RequestCheckUtil::checkNotNull($this->adzoneId,"adzoneId");
-		RequestCheckUtil::checkNotNull($this->endTime,"endTime");
-		RequestCheckUtil::checkNotNull($this->fields,"fields");
-		RequestCheckUtil::checkNotNull($this->startTime,"startTime");
+		RequestCheckUtil::checkNotNull($this->activityId,"activityId");
+		RequestCheckUtil::checkMaxValue($this->pageSize,100,"pageSize");
+		RequestCheckUtil::checkMinValue($this->pageSize,1,"pageSize");
 	}
 	
 	public function putOtherTextParam($key, $value) {

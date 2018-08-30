@@ -3,7 +3,7 @@
  * TOP API: taobao.tbk.dg.item.coupon.get request
  * 
  * @author auto create
- * @since 1.0, 2017.06.21
+ * @since 1.0, 2018.07.25
  */
 class TbkDgItemCouponGetRequest
 {
@@ -18,7 +18,7 @@ class TbkDgItemCouponGetRequest
 	private $cat;
 	
 	/** 
-	 * 第几页，默认：1（当后台类目和查询词均不指定的时候，最多出10000个结果，即page_no*page_size不能超过200；当指定类目或关键词的时候，则最多出100个结果）
+	 * 第几页，默认：1（当后台类目和查询词均不指定的时候，最多出10000个结果，即page_no*page_size不能超过10000；当指定类目或关键词的时候，则最多出100个结果）
 	 **/
 	private $pageNo;
 	

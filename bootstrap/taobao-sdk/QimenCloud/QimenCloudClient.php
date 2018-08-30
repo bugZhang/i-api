@@ -41,7 +41,7 @@ class QimenCloudClient
 		$stringToBeSigned = $this->secretKey;
 		foreach ($params as $k => $v)
 		{
-			if(is_string($v) && "@" != substr($v, 0, 1))
+			if(!is_array($v) && "@" != substr($v, 0, 1))
 			{
 				$stringToBeSigned .= "$k$v";
 			}
@@ -77,9 +77,6 @@ class QimenCloudClient
 			$postMultipart = false;
 			foreach ($postFields as $k => $v)
 			{
-				if(!is_string($v))
-					continue ;
-
 				if("@" != substr($v, 0, 1))//判断是不是文件上传
 				{
 					$postBodyString .= "$k=" . urlencode($v) . "&"; 
