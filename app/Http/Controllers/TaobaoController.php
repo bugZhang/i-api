@@ -86,6 +86,7 @@ $items='';
                             ){
                                 $item->coupon_money = $matches['coupon_money'];
                                 $item->zk_final_coupon_price_wap = $item->zk_final_price_wap - $matches['coupon_limit_money'];
+                                $item->zk_final_coupon_price_wap = floatval(number_format($item->zk_final_coupon_price_wap, 2));
                             }
                         }
                     }
