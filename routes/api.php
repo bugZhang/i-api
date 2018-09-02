@@ -48,3 +48,11 @@ Route::get('/wallpaper/get/{type}/{wid}', 'WallpaperController@getWallpaper');
 Route::get('/wallpaper/impression/add/{wid}', 'WallpaperController@addImpression');
 
 Route::post('/fun/router', 'RouterController@getRouter');
+
+Route::get('/tbk/test', 'TaobaoController@test');
+Route::get('/tbk/items/get', 'TaobaoController@getItems');
+Route::post('/tbk/share/pwd', 'TaobaoController@sharePwd');
+Route::get('/tbk/favourites/{favouriteId}/{page?}', 'TaobaoController@getFavouriteItems');
+Route::get('/tbk/coupon/get', 'TaobaoController@getCouponItems');
+Route::get('/tbk/item/{id}', 'TaobaoController@getItemInfo');
+Route::get('/tbk/pwd/query', 'TaobaoController@queryPwdFromPwd');

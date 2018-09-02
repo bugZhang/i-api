@@ -41,9 +41,9 @@ class TaobaoController extends Controller
         $title  = $request->input('title');
         $url    = $request->input('url');
 
-        $logo = 'http://img1.tbcdn.cn/tfscom/i2/749309273/TB2c19mzxtmpuFjSZFqXXbHFpXa_!!749309273.jpg';
-        $title = '特级无核山楂圈零食无籽去籽无糖山楂干中心圈中药材泡茶500g包邮';
-        $url = 'https://uland.taobao.com/coupon/edetail?e=vEYe%2BsAXOy8GQASttHIRqb5wJn5M5xeMORFRYj99i%2FYOH4xMRYRCNmH1qvx5ArxuoxtOCp1lYzWjC%2FhQv7OdIZQ5wfGz%2Fu%2BNGLN3c5IKM9PuVKWFTfoNZg%3D%3D';
+//        $logo = 'http://img1.tbcdn.cn/tfscom/i2/749309273/TB2c19mzxtmpuFjSZFqXXbHFpXa_!!749309273.jpg';
+//        $title = '特级无核山楂圈零食无籽去籽无糖山楂干中心圈中药材泡茶500g包邮';
+//        $url = 'https://uland.taobao.com/coupon/edetail?e=NGSMQBiDUiUGQASttHIRqV4gYPzQfU52eE%2FZWGw7M20OH4xMRYRCNmH1qvx5ArxuoxtOCp1lYzWjC%2FhQv7OdIZQ5wfGz%2Fu%2BNGLN3c5IKM9MFjaZhgpTjjRlqjQc7%2B9fT';
 
         $pwd = $this->createPwd($url, $title, $logo);
         if($pwd){
@@ -58,6 +58,7 @@ class TaobaoController extends Controller
         $favourite_items_key = 'tbk_favourite_items:' . $favouriteId . ':' . $page;
 
         $items = Redis::get($favourite_items_key);
+$items='';
         if($items){
             $items = json_decode(unserialize($items));
             return $this->return_json('success', $items);
@@ -69,11 +70,27 @@ class TaobaoController extends Controller
             $req->setUnid("wechat");
             $req->setFavoritesId($favouriteId);
             $req->setPageNo($page);
-            $req->setFields("num_iid,title,pict_url,reserve_price,zk_final_price,user_type,item_url,volume,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,coupon_click_url,click_url,type,coupon_info");
+            $req->setFields("num_iid,title,pict_url,reserve_price,zk_final_price,user_type,item_url,volume,zk_final_price_wap,event_start_time,event_end_time,tk_rate,status,coupon_click_url,click_url,type,coupon_info,coupon_remain_count");
             $resp = $this->topClient->execute($req);
             if(!$resp && isset($resp->code)){
                 return $this->return_json('error', '未查询到数据');
             }else{
+                if($resp->results->uatm_tbk_item){
+                    foreach ($resp->results->uatm_tbk_item as $item){
+                        if(isset($item->coupon_info)){
+                            $pattern = '/(?P<coupon_limit_money>\d+)(.*)(?P<coupon_money>\d+)/';
+                            preg_match($pattern, $item->coupon_info, $matches);
+                            if(isset($matches['coupon_money']) &&
+                                isset($matches['coupon_limit_money']) &&
+                                $item->zk_final_price_wap > $matches['coupon_limit_money']
+                            ){
+                                $item->coupon_money = $matches['coupon_money'];
+                                $item->zk_final_coupon_price_wap = $item->zk_final_price_wap - $matches['coupon_limit_money'];
+                            }
+                        }
+                    }
+                }
+
                 Redis::set($favourite_items_key, serialize(json_encode($resp->results->uatm_tbk_item, true)));
                 Redis::expire($favourite_items_key, 60 * 30);
                 return $this->return_json('success', $resp->results->uatm_tbk_item);
@@ -118,11 +135,19 @@ class TaobaoController extends Controller
 
     private function getItemInfoById($num_iids, $platform = 2){
         $req = new \TbkItemInfoGetRequest();
-        $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url");
+//        $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url");
         $req->setPlatform($platform);
         $req->setNumIids($num_iids);
         $resp = $this->topClient->execute($req);
         var_dump($resp);
+
+
+//        $req = new \ItemSellerGetRequest;
+//        $req->setFields("num_iid,title,nick,price,approve_status,sku");
+//        $req->setNumIid($num_iids); //564609484912
+//        $resp = $this->topClient->execute($req, $sessionKey);
+//
+//        var_dump($resp);
     }
 
     private function createPwd($url, $text, $logo){
