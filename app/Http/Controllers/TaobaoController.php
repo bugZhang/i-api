@@ -145,8 +145,8 @@ $items='';
     }
 
     public function queryPwdFromPwd(Request $request){
-        $pwd = $request->input('pwd');
-        $pwd = "【【4支装】云南白药牙膏留兰 薄荷 激爽 冰柠 帮助减轻牙龈问题】http://m.tb.cn/h.3Uz2PV9 点击链接，再选择浏览器咑閞；或復·制这段描述€15eVb3HJvs6€后到👉淘♂寳♀👈";
+        $pwd = $request->input('keyword');
+//        $pwd = "【【4支装】云南白药牙膏留兰 薄荷 激爽 冰柠 帮助减轻牙龈问题】http://m.tb.cn/h.3Uz2PV9 点击链接，再选择浏览器咑閞；或復·制这段描述€15eVb3HJvs6€后到👉淘♂寳♀👈";
 
         $result = $this->queryPwd($pwd);
         if($result){
@@ -159,7 +159,7 @@ $items='';
 
     }
 
-    public function searchByKeyword($keyword, $page = 1){
+    public function searchBykeyword($keyword, $page = 1){
         if(!$keyword){
             return $this->return_json('error', '请输入要查询的关键词');
         }
@@ -180,11 +180,35 @@ $items='';
             foreach ($goodsList as $item){
                 $num_iids[] = $item->num_iid;
             }
-            $goodsList = $this->getItemInfoByIds($num_iids);
-            return $this->return_json('success', $resp->results->n_tbk_item);
+            $infos = $this->getItemInfoByIds($num_iids);
+            foreach ($goodsList as $item){
+                if(!isset($item->click_url) && isset($item->item_url)){
+                    $item->click_url = $item->item_url;
+                }
+                if(isset($item->zk_final_price)){
+                    $item->zk_final_coupon_price_wap = $item->zk_final_price;
+                }
+                if(isset($infos[$item->num_iid])){
+                    $item->coupon_status = 1;
+                    $item->goods_info = $infos[$item->num_iid];
+                }else{
+                    $item->goods_info = new \stdClass();
+                    $item->goods_info->cat_leaf_name = '优惠已过期';
+                    $item->coupon_status = 0;
+                }
+            }
+
+            return $this->return_json('success', $goodsList);
         }else{
             return $this->return_json('error', $resp->error_response->sub_msg);
         }
+    }
+
+    public function searchGoodsByKeyword(Request $request){
+        $keyword = $request->input('keyword');
+        $page = $request->input('page');
+
+        return $this->searchBykeyword($keyword, $page);
     }
 
     private function getItemInfoByIds( array $num_iids, $platform = '2'){
@@ -259,7 +283,17 @@ $items='';
 
             $infos = $this->getItemInfoByIds($num_iids);
             foreach ($goodsList as $item){
-                $item->goods_info = isset($infos[$item->num_iid]) ? $infos[$item->num_iid] : [];
+                if(!isset($item->click_url) && isset($item->item_url)){
+                    $item->click_url = $item->item_url;
+                }
+                if(isset($infos[$item->num_iid])){
+                    $item->coupon_status = 1;
+                    $item->goods_info = $infos[$item->num_iid];
+                }else{
+                    $item->goods_info = new \stdClass();
+                    $item->goods_info->cat_leaf_name = '优惠已过期';
+                    $item->coupon_status = 0;
+                }
             }
             return $goodsList;
         }else{
