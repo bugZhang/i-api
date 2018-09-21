@@ -27,6 +27,7 @@ Route::get('/tbk/favourites/{favouriteId}/{page?}', 'TaobaoController@getFavouri
 Route::get('/tbk/coupon/get/{keyword}/{page?}', 'TaobaoController@getCouponItems');
 Route::get('/tbk/item/{id}', 'TaobaoController@getItemInfo');
 Route::get('/tbk/pwd/query', 'TaobaoController@queryPwdFromPwd');
+Route::get('/tbk/keyword/search/{keyword}', 'TaobaoController@searchGoodsByKeyword');
 
 Route::get('/kelenews/impression/increat/{postId}', 'KelenewsController@increatCount');
 Route::get('/kelenews/post/list/{page}', 'KelenewsController@getPostsFromCache');

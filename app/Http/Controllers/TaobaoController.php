@@ -200,13 +200,16 @@ $items='';
 
             return $this->return_json('success', $goodsList);
         }else{
-            return $this->return_json('error', $resp->error_response->sub_msg);
+            return $this->return_json('error', '未查询到结果');
         }
     }
 
     public function searchGoodsByKeyword(Request $request){
         $keyword = $request->input('keyword');
         $page = $request->input('page');
+
+        $data = $this->searchMaterial('手机', 1);
+        dd($data);
 
         return $this->searchBykeyword($keyword, $page);
     }
@@ -301,6 +304,43 @@ $items='';
         }
     }
 
+
+    public function searchMaterial($keyword, $page){
+
+        $req = new \TbkDgMaterialOptionalRequest;
+//        $req->setStartDsr("10");
+        $req->setPageSize($this->pageSize);
+        $req->setPageNo($page);
+        $req->setPlatform("2");     //	链接形式：1：PC，2：无线，默认：１
+//        $req->setEndTkRate("1234");     //淘客佣金比率上限，如：1234表示12.34%
+//        $req->setStartTkRate("1234");   //淘客佣金比率下限，如：1234表示12.34%
+//        $req->setEndPrice("10");
+//        $req->setStartPrice("10");
+//        $req->setIsOverseas("false");
+//        $req->setIsTmall("false");
+//        $req->setSort("tk_rate_des");
+//        $req->setItemloc("杭州");
+//        $req->setCat("16,18");
+        $req->setQ($keyword);
+//        $req->setMaterialId("2836");
+//        $req->setHasCoupon("false");
+//        $req->setIp("13.2.33.4");
+        $req->setAdzoneId($this->ad_zoneId);
+//        $req->setNeedFreeShipment("true");
+//        $req->setNeedPrepay("true");
+//        $req->setIncludePayRate30("true");
+//        $req->setIncludeGoodRate("true");
+//        $req->setIncludeRfdRate("true");
+//        $req->setNpxLevel("2");
+//        $req->setEndKaTkRate("1234");
+//        $req->setStartKaTkRate("1234");
+//        $req->setDeviceEncrypt("MD5");
+//        $req->setDeviceValue("xxx");
+//        $req->setDeviceType("IMEI");
+        $resp = $this->topClient->execute($req);
+        dd($resp);
+
+    }
 
     private function queryPwd($content){
         $req = new \WirelessShareTpwdQueryRequest();
