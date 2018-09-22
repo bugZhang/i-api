@@ -41,12 +41,16 @@ class TaobaoController extends Controller
         $logo = $request->input('logo');
         $title  = $request->input('title');
         $url    = $request->input('url');
+//        $url    = 'http:' .$url;
 //        $logo = 'https://img.alicdn.com/tfscom/i3/759179292/TB2hfLbfpXXXXcKXXXXXXXXXXXX_!!759179292.jpg';
 //        $title = '酷毙灯LED台灯学生寝室宿舍led护眼台灯学习台灯床头灯可充电台灯';
 //        $url = 'https://uland.taobao.com/coupon/edetail?e=NGSMQBiDUiUGQASttHIRqV4gYPzQfU52eE%2FZWGw7M20OH4xMRYRCNmH1qvx5ArxuoxtOCp1lYzWjC%2FhQv7OdIZQ5wfGz%2Fu%2BNGLN3c5IKM9MFjaZhgpTjjRlqjQc7%2B9fT';
 //        $url = 'https://s.click.taobao.com/t?e=m%3D2%26s%3DTEuHo3ctN3tw4vFB6t2Z2ueEDrYVVa64XoO8tOebS%2Bfjf2vlNIV67sf07l3yvK80F%2FSaKyaJTUaUnQhjQHByW0y6jZVi51WCl4vbPH1BLgQ%2FPAyb7Sjf%2FotgwMO1YqTJ4q%2BRXokHRqt5Mf2rIwS0mYRPvA9GPmsyATWpNZv3pbpJIYSxSYJPubCf2sNOKhxVyGAj0bi%2Fw%2FeiC8fkRd4hDrXI5pLCNRb9cSpj5qSCmbA%3D&unid=wechat';
 //        $url = 'http://h5.m.taobao.com/awp/core/detail.htm?id=549529358077';
 
+        if(strpos($url, '//') === 0){
+            $url = 'https:' . $url;
+        }
         $pwd = $this->createPwd($url, $title, $logo);
         if($pwd){
             return $this->return_json('success', ['pwd' => $pwd]);
@@ -60,7 +64,6 @@ class TaobaoController extends Controller
         $favourite_items_key = 'tbk_favourite_items:' . $favouriteId . ':' . $page;
 
         $items = Redis::get($favourite_items_key);
-$items='';
         if($items){
             $items = json_decode(unserialize($items));
             return $this->return_json('success', $items);
@@ -77,33 +80,7 @@ $items='';
             if(!$resp && isset($resp->code)){
                 return $this->return_json('error', '未查询到数据');
             }else{
-//                if($resp->results->uatm_tbk_item){
-//                    $num_iids = [];
-//                    foreach ($resp->results->uatm_tbk_item as $item){
-//                        $num_iids[] = $item->num_iid;
-//                        if(isset($item->coupon_info)){
-//                            $pattern = '/(?P<coupon_limit_money>\d+)(.*)(?P<coupon_money>\d+)/';
-//                            preg_match($pattern, $item->coupon_info, $matches);
-//                            if(isset($matches['coupon_money']) &&
-//                                isset($matches['coupon_limit_money']) &&
-//                                $item->zk_final_price_wap > $matches['coupon_limit_money']
-//                            ){
-//                                $item->coupon_money = $matches['coupon_money'];
-//                                $item->zk_final_coupon_price_wap = $item->zk_final_price_wap - $matches['coupon_money'];
-//                                $item->zk_final_coupon_price_wap = floatval(number_format($item->zk_final_coupon_price_wap, 2));
-//                            }
-//                        }else{
-//                            $item->zk_final_coupon_price_wap = $item->zk_final_price_wap;
-//                        }
-//                    }
-//
-//                    $infos = $this->getItemInfoByIds($num_iids);
-//                    foreach ($resp->results->uatm_tbk_item as $item){
-//                        $item->goods_info = isset($infos[$item->num_iid]) ? $infos[$item->num_iid] : [];
-//                    }
-//                }
                 $goodsList = $this->mergeGoodsList($resp->results->uatm_tbk_item);
-
                 Redis::set($favourite_items_key, serialize(json_encode($goodsList, true)));
                 Redis::expire($favourite_items_key, 60 * 30);
                 return $this->return_json('success', $goodsList);
@@ -157,6 +134,57 @@ $items='';
         }
         return $this->return_json('error', '未查到优惠券');
 
+    }
+
+    public function searchMaterial(Request $request){
+        $keyword    = $request->input('keyword');
+        $page       = $request->input('page');
+
+        $req = new \TbkDgMaterialOptionalRequest;
+        $req->setPageNo($page);
+        $req->setPageSize($this->pageSize);
+        $req->setPlatform("2");
+//        $req->setItemloc("杭州");
+        $req->setQ($keyword);
+//        $req->setHasCoupon("false");
+//        $req->setIp("13.2.33.4");
+        $req->setAdzoneId($this->ad_zoneId);
+        $resp = $this->topClient->execute($req);
+        if($resp && $resp->total_results > 0){
+            $goodsList = $resp->result_list->map_data;
+
+            $num_iids = [];
+            foreach ($goodsList as $item){
+                $num_iids[] = $item->num_iid;
+            }
+            $infos = $this->getItemInfoByIds($num_iids);
+            foreach ($goodsList as $item){
+                if(!isset($item->click_url) && isset($item->url)){
+                    $item->click_url = $item->url;
+                }
+                if(isset($item->coupon_share_url)){
+                    $item->click_url = $item->coupon_share_url;
+                    $item->coupon_click_url = $item->coupon_share_url;
+                }
+
+                if(isset($item->zk_final_price)){
+                    $item->zk_final_coupon_price_wap = $item->zk_final_price;
+                }
+                if(isset($infos[$item->num_iid])){
+                    $item->coupon_status = 1;
+                    $item->goods_info = $infos[$item->num_iid];
+                }else{
+                    $item->goods_info = new \stdClass();
+                    $item->goods_info->cat_leaf_name = '优惠已过期';
+                    $item->coupon_status = 0;
+                }
+            }
+
+
+            return $this->return_json('success', $goodsList);
+        }else{
+            return $this->return_json('error', '未查询到信息');
+        }
     }
 
     public function searchBykeyword($keyword, $page = 1){

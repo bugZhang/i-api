@@ -56,4 +56,6 @@ Route::get('/tbk/favourites/{favouriteId}/{page?}', 'TaobaoController@getFavouri
 Route::post('/tbk/coupon/search', 'TaobaoController@getCouponItems');
 Route::get('/tbk/item/{id}', 'TaobaoController@getItemInfo');
 Route::post('/tbk/pwd/query', 'TaobaoController@queryPwdFromPwd');
-Route::post('/tbk/keyword/search', 'TaobaoController@searchGoodsByKeyword');
+//Route::post('/tbk/keyword/search', 'TaobaoController@searchGoodsByKeyword');
+Route::post('/tbk/keyword/search', 'TaobaoController@searchMaterial');
+
