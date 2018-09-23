@@ -64,6 +64,7 @@ class TaobaoController extends Controller
         $favourite_items_key = 'tbk_favourite_items:' . $favouriteId . ':' . $page;
 
         $items = Redis::get($favourite_items_key);
+        $items = '';
         if($items){
             $items = json_decode(unserialize($items));
             return $this->return_json('success', $items);
@@ -296,11 +297,11 @@ class TaobaoController extends Controller
                 $num_iids[] = $item->num_iid;
                 $item->zk_final_price_wap = isset($item->zk_final_price_wap) ? $item->zk_final_price_wap : $item->zk_final_price;
                 if(isset($item->coupon_info)){
-                    $pattern = '/(?P<coupon_limit_money>\d+)(.*)(?P<coupon_money>\d+)/';
+                    $pattern = '/(?P<coupon_limit_money>\d+)(.*\D)(?P<coupon_money>\d+)/';
                     preg_match($pattern, $item->coupon_info, $matches);
                     if(isset($matches['coupon_money']) &&
                         isset($matches['coupon_limit_money']) &&
-                        $item->zk_final_price_wap > $matches['coupon_limit_money']
+                        $item->zk_final_price_wap >= $matches['coupon_limit_money']
                     ){
                         $item->coupon_money = $matches['coupon_money'];
                         $item->zk_final_coupon_price_wap = $item->zk_final_price_wap - $matches['coupon_money'];
