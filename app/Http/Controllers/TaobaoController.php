@@ -129,24 +129,21 @@ class TaobaoController extends Controller
         if($result){
             $content = $result->content;
             if($content){
-                return $this->searchByKeyword($content);
+                return $this->searchMaterialByKeyword($content);
             }
         }
         return $this->return_json('error', '未查到优惠券');
 
     }
 
-    public function searchMaterial(Request $request){
-        $keyword    = $request->input('keyword');
-        $page       = $request->input('page');
-
+    private function searchMaterialByKeyword($keyword, $page = 1){
         $req = new \TbkDgMaterialOptionalRequest;
         $req->setPageNo($page);
         $req->setPageSize($this->pageSize);
         $req->setPlatform("2");
 //        $req->setItemloc("杭州");
         $req->setQ($keyword);
-//        $req->setHasCoupon("false");
+        $req->setHasCoupon("true");
 //        $req->setIp("13.2.33.4");
         $req->setAdzoneId($this->ad_zoneId);
         $resp = $this->topClient->execute($req);
@@ -179,12 +176,17 @@ class TaobaoController extends Controller
                     $item->coupon_status = 0;
                 }
             }
-
-
             return $this->return_json('success', $goodsList);
         }else{
             return $this->return_json('error', '未查询到信息');
         }
+    }
+
+    public function searchMaterial(Request $request){
+        $keyword    = $request->input('keyword');
+        $page       = $request->input('page');
+
+        return $this->searchMaterialByKeyword($keyword, $page);
     }
 
     public function searchBykeyword($keyword, $page = 1){
