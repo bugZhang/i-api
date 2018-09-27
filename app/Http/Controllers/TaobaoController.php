@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\TbkTrackModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
@@ -18,10 +19,6 @@ class TaobaoController extends Controller
         self::setTopClient();
     }
 
-    public function test(){
-        $this->getFavouriteList();
-    }
-
     private function setTopClient(){
         if(!$this->topClient){
             $this->topClient = new \TopClient(env('TBK_APPID'), env('TBK_SECRET'));
@@ -29,26 +26,38 @@ class TaobaoController extends Controller
         }
     }
 
-    public function getItems(){
-        $req = new \TbkItemGetRequest();
-        $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick");
-        $req->setQ("女装");
-        $req->setPageSize("20");
+    public function test(){
+        $req = new \TbkUatmFavoritesGetRequest();
+        $req->setPageNo("1");
+        $req->setPageSize($this->pageSize);
+        $req->setFields("favorites_title,favorites_id,type");
         $resp = $this->topClient->execute($req);
+        var_export($resp);
     }
 
+    /**
+     * 生成淘口令
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function sharePwd(Request $request){
         $logo = $request->input('logo');
         $title  = $request->input('title');
         $url    = $request->input('url');
-//        $logo = 'https://img.alicdn.com/tfscom/i3/759179292/TB2hfLbfpXXXXcKXXXXXXXXXXXX_!!759179292.jpg';
-//        $title = '酷毙灯LED台灯学生寝室宿舍led护眼台灯学习台灯床头灯可充电台灯';
-//        $url = 'https://uland.taobao.com/coupon/edetail?e=NGSMQBiDUiUGQASttHIRqV4gYPzQfU52eE%2FZWGw7M20OH4xMRYRCNmH1qvx5ArxuoxtOCp1lYzWjC%2FhQv7OdIZQ5wfGz%2Fu%2BNGLN3c5IKM9MFjaZhgpTjjRlqjQc7%2B9fT';
-//        $url = 'https://s.click.taobao.com/t?e=m%3D2%26s%3DTEuHo3ctN3tw4vFB6t2Z2ueEDrYVVa64XoO8tOebS%2Bfjf2vlNIV67sf07l3yvK80F%2FSaKyaJTUaUnQhjQHByW0y6jZVi51WCl4vbPH1BLgQ%2FPAyb7Sjf%2FotgwMO1YqTJ4q%2BRXokHRqt5Mf2rIwS0mYRPvA9GPmsyATWpNZv3pbpJIYSxSYJPubCf2sNOKhxVyGAj0bi%2Fw%2FeiC8fkRd4hDrXI5pLCNRb9cSpj5qSCmbA%3D&unid=wechat';
-//        $url = 'http://h5.m.taobao.com/awp/core/detail.htm?id=549529358077';
 
+        if(strpos($url, '//') === 0){
+            $url = 'https:' . $url;
+        }
         $pwd = $this->createPwd($url, $title, $logo);
         if($pwd){
+            $tbkTrackModel   = new TbkTrackModel();
+            $trackInfo       = [];
+            $trackInfo['title'] = $title;
+            $trackInfo['url']   = $url;
+            $trackInfo['action']    = TbkTrackModel::ACTION_2;
+            $trackInfo['track_type']    = $tbkTrackModel::TYPE_CLICK;
+            $tbkTrackModel->addTrackInfo($trackInfo);
+
             return $this->return_json('success', ['pwd' => $pwd]);
         }else{
             return $this->return_json('error', '生成口令码失败！');
@@ -56,11 +65,16 @@ class TaobaoController extends Controller
 
     }
 
+    /**
+     * 根据选品库id，查询选品库中的产品
+     * @param $favouriteId
+     * @param $page
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getFavouriteItems($favouriteId, $page){
         $favourite_items_key = 'tbk_favourite_items:' . $favouriteId . ':' . $page;
 
         $items = Redis::get($favourite_items_key);
-$items='';
         if($items){
             $items = json_decode(unserialize($items));
             return $this->return_json('success', $items);
@@ -77,33 +91,7 @@ $items='';
             if(!$resp && isset($resp->code)){
                 return $this->return_json('error', '未查询到数据');
             }else{
-//                if($resp->results->uatm_tbk_item){
-//                    $num_iids = [];
-//                    foreach ($resp->results->uatm_tbk_item as $item){
-//                        $num_iids[] = $item->num_iid;
-//                        if(isset($item->coupon_info)){
-//                            $pattern = '/(?P<coupon_limit_money>\d+)(.*)(?P<coupon_money>\d+)/';
-//                            preg_match($pattern, $item->coupon_info, $matches);
-//                            if(isset($matches['coupon_money']) &&
-//                                isset($matches['coupon_limit_money']) &&
-//                                $item->zk_final_price_wap > $matches['coupon_limit_money']
-//                            ){
-//                                $item->coupon_money = $matches['coupon_money'];
-//                                $item->zk_final_coupon_price_wap = $item->zk_final_price_wap - $matches['coupon_money'];
-//                                $item->zk_final_coupon_price_wap = floatval(number_format($item->zk_final_coupon_price_wap, 2));
-//                            }
-//                        }else{
-//                            $item->zk_final_coupon_price_wap = $item->zk_final_price_wap;
-//                        }
-//                    }
-//
-//                    $infos = $this->getItemInfoByIds($num_iids);
-//                    foreach ($resp->results->uatm_tbk_item as $item){
-//                        $item->goods_info = isset($infos[$item->num_iid]) ? $infos[$item->num_iid] : [];
-//                    }
-//                }
                 $goodsList = $this->mergeGoodsList($resp->results->uatm_tbk_item);
-
                 Redis::set($favourite_items_key, serialize(json_encode($goodsList, true)));
                 Redis::expire($favourite_items_key, 60 * 30);
                 return $this->return_json('success', $goodsList);
@@ -111,80 +99,76 @@ $items='';
         }
     }
 
-    public function getCouponItems(Request $request){
-        $keyword = $request->input('keyword');
-        $page = $request->input('page') ?: 1;
-
-        $req = new \TbkDgItemCouponGetRequest();
-        $req->setAdzoneId($this->ad_zoneId);
-        $req->setPlatform("2");
-        $req->setPageSize($this->pageSize);
-        $req->setQ($keyword);
-        $req->setPageNo($page);
-        $resp = $this->topClient->execute($req);
-        if($resp && isset($resp->results)){
-            $goodsList = $this->mergeGoodsList($resp->results->tbk_coupon);
-            return $this->return_json('success', $goodsList);
-        }else{
-            return $this->return_json('error', $resp->error_response->sub_msg);
-        }
-    }
-
-    private function getFavouriteList(){
-        $req = new \TbkUatmFavoritesGetRequest();
-        $req->setPageNo("1");
-        $req->setPageSize($this->pageSize);
-        $req->setFields("favorites_title,favorites_id,type");
-//        $req->setType("1");
-        $resp = $this->topClient->execute($req);
-        var_export($resp);
-    }
-
-    public function getItemInfo($id){
-        $this->getItemInfoByIds([$id]);
-    }
-
+    /**
+     * 通过淘口令查询产品
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function queryPwdFromPwd(Request $request){
         $pwd = $request->input('keyword');
-//        $pwd = "【【4支装】云南白药牙膏留兰 薄荷 激爽 冰柠 帮助减轻牙龈问题】http://m.tb.cn/h.3Uz2PV9 点击链接，再选择浏览器咑閞；或復·制这段描述€15eVb3HJvs6€后到👉淘♂寳♀👈";
-
         $result = $this->queryPwd($pwd);
+        $tbkTrackModel   = new TbkTrackModel();
+        $trackInfo       = [];
+        $trackInfo['keyword'] = $pwd;
+        $trackInfo['action']    = TbkTrackModel::ACTION_5;
+        $trackInfo['track_type']    = $tbkTrackModel::TYPE_CLICK;
+        $tbkTrackModel->addTrackInfo($trackInfo);
         if($result){
             $content = $result->content;
             if($content){
-                return $this->searchByKeyword($content);
+                return $this->searchMaterialByKeyword($content);
             }
         }
         return $this->return_json('error', '未查到优惠券');
 
     }
 
-    public function searchBykeyword($keyword, $page = 1){
-        if(!$keyword){
-            return $this->return_json('error', '请输入要查询的关键词');
-        }
+    public function searchMaterial(Request $request){
+        $keyword    = $request->input('keyword');
+        $page       = $request->input('page');
 
-        $req = new \TbkItemGetRequest;
-        $req->setFields("num_iid,title,pict_url,small_images,reserve_price,zk_final_price,user_type,provcity,item_url,seller_id,volume,nick");
-        $req->setQ($keyword);
-        $req->setSort("tk_rate_des");
-        $req->setPlatform("2");         //链接形式：1：PC，2：无线，默认：１
-        $req->setStartTkRate("123");
-//        $req->setEndTkRate("1000");
+        $tbkTrackModel   = new TbkTrackModel();
+        $trackInfo       = [];
+        $trackInfo['keyword'] = $keyword;
+        $trackInfo['action']    = TbkTrackModel::ACTION_1;
+        $trackInfo['track_type']    = $tbkTrackModel::TYPE_CLICK;
+        $tbkTrackModel->addTrackInfo($trackInfo);
+
+        return $this->searchMaterialByKeyword($keyword, $page);
+    }
+
+    /**
+     * 根据关键字查询产品
+     * @param $keyword
+     * @param int $page
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function searchMaterialByKeyword($keyword, $page = 1){
+        $req = new \TbkDgMaterialOptionalRequest;
         $req->setPageNo($page);
         $req->setPageSize($this->pageSize);
+        $req->setPlatform("2");
+        $req->setQ($keyword);
+        $req->setHasCoupon("true");
+        $req->setAdzoneId($this->ad_zoneId);
         $resp = $this->topClient->execute($req);
-        if($resp && isset($resp->results->n_tbk_item)){
-            $goodsList = $resp->results->n_tbk_item;
+        if($resp && $resp->total_results > 0){
+            $goodsList = $resp->result_list->map_data;
+
             $num_iids = [];
             foreach ($goodsList as $item){
                 $num_iids[] = $item->num_iid;
             }
             $infos = $this->getItemInfoByIds($num_iids);
             foreach ($goodsList as $item){
-                if(!isset($item->click_url) && isset($item->item_url)){
-                    $item->click_url = $item->item_url;
+                if(!isset($item->click_url) && isset($item->url)){
+                    $item->click_url = $item->url;
                 }
+                if(isset($item->coupon_share_url)){
+                    $item->click_url = $item->coupon_share_url;
+                    $item->coupon_click_url = $item->coupon_share_url;
+                }
+
                 if(isset($item->zk_final_price)){
                     $item->zk_final_coupon_price_wap = $item->zk_final_price;
                 }
@@ -197,21 +181,10 @@ $items='';
                     $item->coupon_status = 0;
                 }
             }
-
             return $this->return_json('success', $goodsList);
         }else{
-            return $this->return_json('error', '未查询到结果');
+            return $this->return_json('error', '未查询到信息');
         }
-    }
-
-    public function searchGoodsByKeyword(Request $request){
-        $keyword = $request->input('keyword');
-        $page = $request->input('page');
-
-        $data = $this->searchMaterial('手机', 1);
-        dd($data);
-
-        return $this->searchBykeyword($keyword, $page);
     }
 
     private function getItemInfoByIds( array $num_iids, $platform = '2'){
@@ -236,6 +209,13 @@ $items='';
         }
     }
 
+    /**
+     * 创建淘口令
+     * @param $url
+     * @param $text
+     * @param $logo
+     * @return int
+     */
     private function createPwd($url, $text, $logo){
 
         if(!$url){
@@ -269,11 +249,11 @@ $items='';
                 $num_iids[] = $item->num_iid;
                 $item->zk_final_price_wap = isset($item->zk_final_price_wap) ? $item->zk_final_price_wap : $item->zk_final_price;
                 if(isset($item->coupon_info)){
-                    $pattern = '/(?P<coupon_limit_money>\d+)(.*)(?P<coupon_money>\d+)/';
+                    $pattern = '/(?P<coupon_limit_money>\d+)(.*\D)(?P<coupon_money>\d+)/';
                     preg_match($pattern, $item->coupon_info, $matches);
                     if(isset($matches['coupon_money']) &&
                         isset($matches['coupon_limit_money']) &&
-                        $item->zk_final_price_wap > $matches['coupon_limit_money']
+                        $item->zk_final_price_wap >= $matches['coupon_limit_money']
                     ){
                         $item->coupon_money = $matches['coupon_money'];
                         $item->zk_final_coupon_price_wap = $item->zk_final_price_wap - $matches['coupon_money'];
@@ -304,44 +284,6 @@ $items='';
         }
     }
 
-
-    public function searchMaterial($keyword, $page){
-
-        $req = new \TbkDgMaterialOptionalRequest;
-//        $req->setStartDsr("10");
-        $req->setPageSize($this->pageSize);
-        $req->setPageNo($page);
-        $req->setPlatform("2");     //	链接形式：1：PC，2：无线，默认：１
-//        $req->setEndTkRate("1234");     //淘客佣金比率上限，如：1234表示12.34%
-//        $req->setStartTkRate("1234");   //淘客佣金比率下限，如：1234表示12.34%
-//        $req->setEndPrice("10");
-//        $req->setStartPrice("10");
-//        $req->setIsOverseas("false");
-//        $req->setIsTmall("false");
-//        $req->setSort("tk_rate_des");
-//        $req->setItemloc("杭州");
-//        $req->setCat("16,18");
-        $req->setQ($keyword);
-//        $req->setMaterialId("2836");
-//        $req->setHasCoupon("false");
-//        $req->setIp("13.2.33.4");
-        $req->setAdzoneId($this->ad_zoneId);
-//        $req->setNeedFreeShipment("true");
-//        $req->setNeedPrepay("true");
-//        $req->setIncludePayRate30("true");
-//        $req->setIncludeGoodRate("true");
-//        $req->setIncludeRfdRate("true");
-//        $req->setNpxLevel("2");
-//        $req->setEndKaTkRate("1234");
-//        $req->setStartKaTkRate("1234");
-//        $req->setDeviceEncrypt("MD5");
-//        $req->setDeviceValue("xxx");
-//        $req->setDeviceType("IMEI");
-        $resp = $this->topClient->execute($req);
-        dd($resp);
-
-    }
-
     private function queryPwd($content){
         $req = new \WirelessShareTpwdQueryRequest();
         $req->setPasswordContent($content);
@@ -351,5 +293,9 @@ $items='';
         }else{
             return $resp;
         }
+    }
+
+    public function getItemInfo($id){
+        $this->getItemInfoByIds([$id]);
     }
 }
