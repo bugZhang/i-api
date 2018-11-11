@@ -3,12 +3,11 @@
 namespace App\Http\Middleware;
 
 use App\Traits\ResponseJson;
-use App\Utils\WxBizDataCrypt;
 use Closure;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
-class CheckWxSession
+class checkNewBankSession
 {
     use ResponseJson;
     /**
@@ -24,7 +23,7 @@ class CheckWxSession
         if($sid){
             $rawData = $request->input('rawData');
             $signature = $request->input('signature');
-            $hKey = env('WX_NEW_BANK_SESSION_PREFIX') . $sid;
+            $hKey = env('WX_REDIS_SESSION_PREFIX') . $sid;
             if($rawData && $signature){
                 $sessionKey    = Redis::hget($hKey, 'session_key');
                 $signature2    = sha1($rawData . $sessionKey);

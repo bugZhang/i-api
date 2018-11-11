@@ -11,6 +11,41 @@ class BankModel extends Model
     protected $table = 'bank_branch_online';
     public $timestamps = false;
 
+
+    public function selectNewBanksByAreaAndKeyword($bankCode, $keyword, $province, $page = 1){
+        if(!$page || $page < 1){
+            $page = 1;
+        }
+        $limit = 6;
+        $offset = $limit * ($page - 1);
+        $condition = [];
+
+        if(is_numeric($keyword)){
+            $condition[] = ['bank_code', '=', $keyword];
+            $banks = DB::table('banks')->where($condition)
+                ->select('id', 'bank_name', 'bank_code', 'branch_bank_code', 'branch_bank_name')
+                ->offset($offset)
+                ->limit($limit)
+                ->get();
+
+        }else{
+            $condition[] = ['bank_code', '=', $bankCode];
+            $condition[] = ['province_name', '=', $province];
+            $banks = DB::table('banks')->where($condition)
+                ->where(function($query) use ($keyword){
+                    $query->where('branch_bank_name', 'like', '%' . $keyword . '%')
+                        ->orWhere(function($query) use ($keyword){
+                            $query->where('city_name', 'like', '%' . $keyword . '%');
+                        });
+                })
+                ->select('id', 'bank_name', 'bank_code', 'branch_bank_code', 'branch_bank_name')
+                ->offset($offset)
+                ->limit($limit)
+                ->get();
+        }
+        return $banks && $banks->count() ? $banks : false;
+    }
+
     public function selectBanksByNameAndArea($bankCode, $keyword, $province, $page = 1){
 
         if(!$page || $page < 1){

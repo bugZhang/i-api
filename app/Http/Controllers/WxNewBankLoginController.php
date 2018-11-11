@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\WxUserModel;
+use App\Model\WxNewBankUserModel;
 use App\Service\WxLoginService;
 use App\Utils\WxBizDataCrypt;
 use Illuminate\Http\Request;
@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 
-class WxLoginController extends Controller
+class WxNewBankLoginController extends Controller
 {
     private $authorization_code = 'authorization_code';
 
     public function getSessionKey($code){
 
-        $appid = env('WX_APPID');
-        $secret = env('WX_SECRET');
+        $appid = env('WX_NEW_BANK_APPID');
+        $secret = env('WX_NEW_BANK_SECRET');
 
         if(!$appid || !$secret){
             return $this->return_json('error', '参数错误');
@@ -58,7 +58,7 @@ class WxLoginController extends Controller
             return $this->return_json('error', '获取参数失败');
         }
         $encryptedData = $request->encryptedData;
-        $appid = env('WX_APPID');
+        $appid = env('WX_NEW_BANK_APPID');
 
         $sessionId = $request->header('p-sid');
         $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
@@ -85,32 +85,13 @@ class WxLoginController extends Controller
             'nick_name' => $userInfo->nickName,
         ];
 
-        $userModel  = new WxUserModel();
+        $userModel  = new WxNewBankUserModel();
         $status = $userModel->saveOrUpdate($userParams);
         if($status){
             return $this->return_json('success', '保存成功');
         }else{
             Log::error('保存用户信息失败' . explode(',', $userParams));
             return $this->return_json('error', '保存失败');
-        }
-
-    }
-
-    public function getMyZhi(Request $request){
-
-        $t = $request->input('t');
-        if($t != 'b'){    //如果是b 则不显示
-            $seed = time() % 3;
-            if($seed == 1){
-                return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
-            }elseif ($seed == 2){
-                return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
-            }else{
-                // return $this->return_json('success', ['zhi'=>'7GVKjI10Dk']);
-                return $this->return_json('error', ['data'=>'测试测试']);
-            }
-        }else{
-            return $this->return_json('error', ['data'=>'测试测试']);
         }
 
     }

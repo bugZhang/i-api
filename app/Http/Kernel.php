@@ -39,7 +39,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
-            'checkwxsessioin',
+//            'checkwxsessoin',
 
         ],
     ];
@@ -58,6 +58,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'checkwxsessioin' => \App\Http\Middleware\CheckWxSession::class,
+        'checkwxsessoin' => \App\Http\Middleware\CheckWxSession::class,
+        'checkNewBankSession' => \App\Http\Middleware\CheckNewBankSession::class,
     ];
 }

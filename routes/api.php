@@ -17,20 +17,34 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::prefix('new-bank')->middleware(['checkNewBankSession'])->group(function(){
+    Route::get('/search/{bankCode}/{province}/{keyword}/{page?}', 'BankController@getNewBanks');
+    Route::get('/get-session-key/{code}', 'WxNewBankLoginController@getSessionKey');
+    Route::get('/session/check/psid', 'WxNewBankLoginController@checkPsid');
+    Route::post('/save-user', 'WxNewBankLoginController@saveUser');
+    Route::get('/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
+    Route::get('/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
 
-Route::get('/area/getProvince', 'AreaController@getProvince');
-Route::get('/area/getCity/{id}', 'AreaController@getCity');
-Route::get('/bank/search/{bankCode}/{province}/{keyword}/{page?}', 'BankController@getBanks');
+});
 
-Route::get('/wx/bank/zhi/get', 'WxLoginController@getMyZhi');  //
-Route::get('/wx/get-session-key/{code}', 'WxLoginController@getSessionKey');
-Route::get('/wx/session/check/psid', 'WxLoginController@checkPsid');
-Route::get('/wx/get-user/{openid}', 'WxLoginController@getUser');
-Route::post('/wx/save-user', 'WxLoginController@saveUser');
 
-Route::get('/wx/bank/collect/get', 'WxBankCollectController@getUserCollect');  //获取用户收藏
-Route::get('/wx/bank/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
-Route::get('/wx/bank/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
+Route::middleware(['checkwxsessoin'])->group(function(){
+    Route::get('/area/getProvince', 'AreaController@getProvince');
+    Route::get('/area/getCity/{id}', 'AreaController@getCity');
+    Route::get('/bank/search/{bankCode}/{province}/{keyword}/{page?}', 'BankController@getBanks');
+
+    Route::get('/wx/bank/zhi/get', 'WxLoginController@getMyZhi');  //
+    Route::get('/wx/get-session-key/{code}', 'WxLoginController@getSessionKey');
+    Route::get('/wx/session/check/psid', 'WxLoginController@checkPsid');
+    Route::get('/wx/get-user/{openid}', 'WxLoginController@getUser');
+    Route::post('/wx/save-user', 'WxLoginController@saveUser');
+
+    Route::get('/wx/bank/collect/get', 'WxBankCollectController@getUserCollect');  //获取用户收藏
+    Route::get('/wx/bank/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
+    Route::get('/wx/bank/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
+});
+
+
 Route::get('/wx/img/get/random', 'AreaController@getRandomImg');
 Route::post('/wx/contact/get', 'WxContactController@getMsg');
 

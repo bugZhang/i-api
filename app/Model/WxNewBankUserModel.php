@@ -4,10 +4,10 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WxUserModel extends Model
+class WxNewBankUserModel extends Model
 {
 
-    protected $table = 'wx_user';
+    protected $table = 'wx_bank_user';
     public $timestamps = false;
 
     public function selectUserByOpenid($openid){
