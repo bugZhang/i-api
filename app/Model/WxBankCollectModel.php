@@ -4,6 +4,7 @@ namespace App\Model;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class WxBankCollectModel extends Model
 {
@@ -18,6 +19,20 @@ class WxBankCollectModel extends Model
         $result = $this->leftJoin('bank_branch_online', 'wx_bank_collect.bank_code', '=', 'bank_branch_online.code')
             ->where('wx_bank_collect.open_id', '=', $openid)
             ->select('open_id', 'bank_code', 'name')
+            ->get();
+        return $result->count() > 0 ? $result : 0;
+
+    }
+
+
+    public function selectNewBankCollectByOpenid($openid){
+
+        if(!$openid){
+            return 0;
+        }
+        $result = $this->leftJoin('banks', 'wx_bank_collect.bank_code', '=', 'banks.branch_bank_code')
+            ->where('wx_bank_collect.open_id', '=', $openid)
+            ->select('branch_bank_code', 'branch_bank_name', 'bank_name', 'banks.bank_code')
             ->get();
         return $result->count() > 0 ? $result : 0;
 

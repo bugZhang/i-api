@@ -42,7 +42,7 @@ class WxNewBankLoginController extends Controller
         $expires_in = isset($response['expires_in']) ? $response['expires_in'] * 2 : env('WX_REDIS_SESSION_EXPIRE');
         $sessionId = Str::random(40);
 
-        $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
+        $hKey = env('WX_NEW_BANK_REDIS_SESSION_PREFIX') . $sessionId;
 
         Redis::hset($hKey, 'openid', $response['openid']);
         Redis::hset($hKey, 'session_key', $response['session_key']);
@@ -61,7 +61,7 @@ class WxNewBankLoginController extends Controller
         $appid = env('WX_NEW_BANK_APPID');
 
         $sessionId = $request->header('p-sid');
-        $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
+        $hKey = env('WX_NEW_BANK_REDIS_SESSION_PREFIX') . $sessionId;
         $session_key    = Redis::hget($hKey, 'session_key');
 
         $iv = $request->iv;

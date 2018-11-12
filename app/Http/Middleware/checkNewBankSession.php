@@ -19,11 +19,12 @@ class checkNewBankSession
      */
     public function handle($request, Closure $next)
     {
+        $request->isNewBank = 1;
         $sid = $request->header('p-sid');
         if($sid){
             $rawData = $request->input('rawData');
             $signature = $request->input('signature');
-            $hKey = env('WX_REDIS_SESSION_PREFIX') . $sid;
+            $hKey = env('WX_NEW_BANK_REDIS_SESSION_PREFIX') . $sid;
             if($rawData && $signature){
                 $sessionKey    = Redis::hget($hKey, 'session_key');
                 $signature2    = sha1($rawData . $sessionKey);
