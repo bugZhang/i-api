@@ -106,8 +106,8 @@ class WxBankCollectController extends Controller
     private function mergeNewBanks($collectBanks){
         if(empty($collectBanks)) return false;
         foreach ($collectBanks as $bank) {
-            $bank->branch_bank_name = preg_replace("/^" . $bank->bank_name . "/", '', $bank->branch_bank_name, 1);
-            $bank->branch_bank_name = preg_replace("/^股份有限公司/", '', $bank->branch_bank_name, 1);
+            $bank->branch_bank_short_name = preg_replace("/^" . $bank->bank_name . "/", '', $bank->branch_bank_name, 1);
+            $bank->branch_bank_short_name = preg_replace("/^股份有限公司/", '', $bank->branch_bank_short_name, 1);
         }
         return $collectBanks;
     }
