@@ -7,7 +7,7 @@ use Closure;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
-class checkNewBankSession
+class CheckNewBankSession
 {
     use ResponseJson;
     /**
