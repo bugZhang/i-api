@@ -21,7 +21,7 @@ class BankModel extends Model
         $condition = [];
 
         if(is_numeric($keyword)){
-            $condition[] = ['bank_code', '=', $keyword];
+            $condition[] = ['branch_bank_code', '=', $keyword];
             $banks = DB::table('banks')->where($condition)
                 ->select('id', 'bank_name', 'bank_code', 'branch_bank_code', 'branch_bank_name')
                 ->offset($offset)
