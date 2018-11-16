@@ -139,7 +139,7 @@ class BankController extends Controller
         $song = $songs[$seed];
 
         $miniPrograms = [
-            ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wxde5f48f5fecac8eb'],
+            ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wx02e7e18379ac94fd'],
             ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wxde5f48f5fecac8eb'],
             ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wxde5f48f5fecac8eb'],
         ];
