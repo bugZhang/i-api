@@ -121,4 +121,30 @@ class BankController extends Controller
         }
 
     }
+
+    public function getBannerImgs(){
+
+        $songs = ['该乐观起来，这世界有四季与远方还有火锅与理想',
+            '你不知道一个一见你就笑的人有多喜欢你', '抱最大的希望，为最大的努力，做最坏的打算',
+            '你不能左右天气，但你能转变你的心情', '路漫漫其修远今，吾将上下而求索',
+            '生活的道路一旦选定，就要勇敢地走到底，决不回头', '年轻是我们唯一拥有权利去编织梦想的时光',
+            '快乐要懂得分享，才能加倍的快乐', '要克服生活的焦虑和沮丧，得先学会做自己的主人',
+            '纯洁的思想，可使最微小的行动高贵起来', '只要有信心，人永远不会挫败', '快乐不是因为得到的多而是因为计较的少',
+            '如果心胸不似海，又怎能有海一样的事业', '小时候画在手上的表没有动，却带走了我们最好的时光', '会拐弯的小溪，才能最终流向大海',
+            '心有所住，即为非住。应无所住而生其心', '多欲为苦，生死疲劳，从贪欲起，少欲无为，身心自在', '我曾经豪情万丈，归来却空空的行囊',
+            '最美的不是下雨天，是曾与你躲过雨的屋檐', '从来没有一种坚持会被辜负'];
+
+
+        $seed = rand(0, (count($songs) - 1));
+        $song = $songs[$seed];
+
+        $miniPrograms = [
+            ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wxde5f48f5fecac8eb'],
+            ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wxde5f48f5fecac8eb'],
+            ['img' => 'https://wx-api.kelenews.com/api/wx/img/get/random', 'appid' => 'wxde5f48f5fecac8eb'],
+        ];
+
+        return $this->return_json('success', ['song' => $song, 'banners' => $miniPrograms]);
+
+    }
 }

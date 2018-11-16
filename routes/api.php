@@ -25,6 +25,7 @@ Route::prefix('new-bank')->middleware(['checkNewBankSession'])->group(function()
     Route::get('/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
     Route::get('/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
     Route::get('/collect/get', 'WxBankCollectController@getNewBankUserCollect');  //获取用户收藏
+    Route::get('/banner-img/get', 'BankController@getBannerImgs');  //获取用户收藏
 
 });
 
