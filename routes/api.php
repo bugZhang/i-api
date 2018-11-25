@@ -29,6 +29,10 @@ Route::prefix('new-bank')->middleware(['checkNewBankSession'])->group(function()
 
 });
 
+Route::prefix('wx-tudou')->group(function(){
+    Route::get('/', 'WxTudouController@test');
+});
+
 
 Route::middleware(['checkwxsessoin'])->group(function(){
     Route::get('/area/getProvince', 'AreaController@getProvince');
