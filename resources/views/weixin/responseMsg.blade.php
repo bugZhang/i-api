@@ -1,7 +1,7 @@
 <xml>
-    <ToUserName><![CDATA[{{ $message->FromUserName }}]]></ToUserName>
-    <FromUserName><![CDATA[{{ $message->ToUserName }}]]></FromUserName>
+    <ToUserName><![CDATA[{{ $FromUserName }}]]></ToUserName>
+    <FromUserName><![CDATA[{{ $ToUserName }}]]></FromUserName>
     <CreateTime>{{ time() }}</CreateTime>
-    <MsgType><![CDATA[text]]></MsgType>
-    <Content><![CDATA[{{ $message->Content }}]]></Content>
+    <MsgType><![CDATA[{{$MsgType}}]]></MsgType>
+    <Content><![CDATA[{{ $Content }}]]></Content>
 </xml>
