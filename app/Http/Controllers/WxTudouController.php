@@ -34,14 +34,16 @@ class WxTudouController extends Controller
 
     public function test(Request $request){
         $msg = $request->getContent();
-        $xmlObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
-        $msgType = $xmlObj->MsgType;
+        Log::info($msg);
+        if($msg){
+            $xmlObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $msgType = $xmlObj->MsgType;
 
-        $content = $xmlObj->Content;
+            $content = $xmlObj->Content;
 
-        Log::info($msgType);
-        Log::info($content);
-
+            Log::info($msgType);
+            Log::info($content);
+        }
         return '';
 
     }
