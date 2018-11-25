@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class WxTudouController extends Controller
 {
@@ -37,13 +38,22 @@ class WxTudouController extends Controller
         $msg = $request->getContent();
         if($msg){
             Log::error('-=-=-=-=-=-=-=-=');
-            $xmlObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $msgType = $xmlObj->MsgType;
+            $msgObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
+            $msgType = $msgObj->MsgType;
+            $content = $msgObj->Content;
+//            $msgObj->ToUserName;
+//            $msgObj->FromUserName;
+//            $msgObj->CreateTime;
+            $msgObj->Content = '测试成功';
 
-            $content = $xmlObj->Content;
 
-            Log::error($msgType);
-            Log::error($content);
+//            $msgObj->MsgId;
+            $msgObj->MsgType = 'text';
+
+
+            return response()->view('weixin.responseMsg', $msgObj);
+//            return View::make('weixin.responseMsg')->with('message', $message);
+
         }else{
             Log::error('+++++++++++++++');
         }
