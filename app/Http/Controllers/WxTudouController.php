@@ -33,19 +33,19 @@ class WxTudouController extends Controller
 
 
     public function getMsg(Request $request){
-        Log::info('!1111111111111111');
+        Log::error('!1111111111111111');
         $msg = $request->getContent();
         if($msg){
-            Log::info('-=-=-=-=-=-=-=-=');
+            Log::error('-=-=-=-=-=-=-=-=');
             $xmlObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
             $msgType = $xmlObj->MsgType;
 
             $content = $xmlObj->Content;
 
-            Log::info($msgType);
-            Log::info($content);
+            Log::error($msgType);
+            Log::error($content);
         }else{
-            Log::info('+++++++++++++++');
+            Log::error('+++++++++++++++');
         }
         return 'success';
 
