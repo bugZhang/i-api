@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class WxTudouController extends Controller
 {
 
-    public function test(Request $request) {
+    public function test1(Request $request) {
 
         $signature = $request->input('signature');
         $timestamp = $request->input('timestamp');
@@ -30,6 +31,20 @@ class WxTudouController extends Controller
 
     }
 
+
+    public function test(Request $request){
+        $msg = $request->getContent();
+        $xmlObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $msgType = $xmlObj->MsgType;
+
+        $content = $xmlObj->Content;
+
+        Log::info($msgType);
+        Log::info($content);
+
+        return '';
+
+    }
 
 
 }

@@ -230,5 +230,7 @@ return [
 
     'WX_GZH_TOKEN' => env('WX_GZH_TOKEN', null),
     'WX_GZH_EncodingAESKey' => env('WX_GZH_EncodingAESKey', null),
+    'WX_GZH_APPID' => env('WX_GZH_APPID', null),
+    'WX_GZH_APPSECRET' => env('WX_GZH_APPSECRET', null),
 
 ];
