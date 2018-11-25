@@ -44,7 +44,7 @@ class WxTudouController extends Controller
             Log::info($msgType);
             Log::info($content);
         }
-        return '';
+        return 'success';
 
     }
 
