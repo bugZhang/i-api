@@ -30,7 +30,7 @@ Route::prefix('new-bank')->middleware(['checkNewBankSession'])->group(function()
 });
 
 Route::prefix('wx-tudou')->group(function(){
-    Route::get('/', 'WxTudouController@test');
+    Route::post('/', 'WxTudouController@test');
 });
 
 
