@@ -12,6 +12,36 @@ class WxBankCollectController extends Controller
 
     private $collectMaxCount = 5;
 
+    public function getUserCollectV2(Request $request){
+        $sessionId   = $request->header('p-sid');
+        if(!$sessionId){
+            Log::error('请求头信息中没有p-sid' . $sessionId);
+            return $this->return_json('error', '参数错误');
+        }
+        $hKey = env('WX_REDIS_SESSION_PREFIX') . $sessionId;
+        $openid = Redis::hget($hKey, 'openid');
+        if(!$openid){
+            Log::error('缓存信息中未找到openid，登陆过期，获取收藏失败');
+            return $this->return_json('error', '登陆过期');
+        }
+        $wxCollectModel = new WxBankCollectModel();
+        $banks = $wxCollectModel->selectNewBankCollectByOpenid($openid);
+        if($banks->isNotEmpty()){
+            $bankData = [];
+            foreach ($banks as $bank){
+                $bankData[] = [
+                    'open_id' => $openid,
+                    'bank_code' => $bank->branch_bank_code,
+                    'name' => $bank->branch_bank_name
+                ];
+            }
+
+            return $this->return_json('success', $bankData);
+        }else{
+            return $this->return_json('empty', '未找到数据');
+        }
+    }
+
     public function getUserCollect(Request $request){
         $sessionId   = $request->header('p-sid');
         if(!$sessionId){
@@ -95,7 +125,7 @@ class WxBankCollectController extends Controller
         }
         $wxCollectModel = new WxBankCollectModel();
         $banks = $wxCollectModel->selectNewBankCollectByOpenid($openid);
-        if($banks){
+        if($banks->isNotEmpty()){
             $banks = $this->mergeNewBanks($banks);
             return $this->return_json('success', $banks->toArray());
         }else{

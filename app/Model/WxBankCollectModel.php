@@ -11,6 +11,7 @@ class WxBankCollectModel extends Model
     protected $table = 'wx_bank_collect';
     public $timestamps = false;
 
+
     public function selectCollectByOpenid($openid){
 
         if(!$openid){
@@ -34,7 +35,7 @@ class WxBankCollectModel extends Model
             ->where('wx_bank_collect.open_id', '=', $openid)
             ->select('branch_bank_code', 'branch_bank_name', 'bank_name', 'banks.bank_code')
             ->get();
-        return $result->count() > 0 ? $result : 0;
+        return $result;
 
     }
 

@@ -37,7 +37,7 @@ Route::prefix('wx-tudou')->group(function(){
 Route::middleware(['checkwxsessoin'])->group(function(){
     Route::get('/area/getProvince', 'AreaController@getProvince');
     Route::get('/area/getCity/{id}', 'AreaController@getCity');
-    Route::get('/bank/search/{bankCode}/{province}/{keyword}/{page?}', 'BankController@getBanks');
+    Route::get('/bank/search/{bankCode}/{province}/{keyword}/{page?}', 'BankController@getBanksV2');
 
     Route::get('/wx/bank/zhi/get', 'WxLoginController@getMyZhi');  //
     Route::get('/wx/get-session-key/{code}', 'WxLoginController@getSessionKey');
@@ -45,7 +45,7 @@ Route::middleware(['checkwxsessoin'])->group(function(){
     Route::get('/wx/get-user/{openid}', 'WxLoginController@getUser');
     Route::post('/wx/save-user', 'WxLoginController@saveUser');
 
-    Route::get('/wx/bank/collect/get', 'WxBankCollectController@getUserCollect');  //获取用户收藏
+    Route::get('/wx/bank/collect/get', 'WxBankCollectController@getUserCollectV2');  //获取用户收藏
     Route::get('/wx/bank/collect/save/{bankcode}', 'WxBankCollectController@saveUserCollect');
     Route::get('/wx/bank/collect/delete/{bankcode}', 'WxBankCollectController@deleteUserCollect');
 });

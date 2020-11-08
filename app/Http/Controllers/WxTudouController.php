@@ -34,32 +34,18 @@ class WxTudouController extends Controller
 
 
     public function getMsg(Request $request){
-        Log::error('!1111111111111111');
         $msg = $request->getContent();
         if($msg){
             $msgObj = simplexml_load_string($msg, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $msgType = $msgObj->MsgType;
-            $content = $msgObj->Content;
-//            $msgObj->ToUserName;
-//            $msgObj->FromUserName;
-//            $msgObj->CreateTime;
-//            $msgObj->Content = '测试成功';
-//            $msgObj->MsgId;
-//            $msgObj->MsgType = 'text';
 
-
+            Log::error('留言信息：' .  $msgObj->Content);
             $responseMsg['MsgType'] = 'text';
+
+
             $responseMsg['Content'] = '测试成功';
             $responseMsg['ToUserName'] = $msgObj->ToUserName;
             $responseMsg['FromUserName'] = $msgObj->FromUserName;
-
-
             return view('weixin.responseMsg', $responseMsg);
-//            return response()->view('weixin.responseMsg', $msgObj);
-//            return View::make('weixin.responseMsg')->with('message', $message);
-
-        }else{
-            Log::error('+++++++++++++++');
         }
         return 'success';
 
