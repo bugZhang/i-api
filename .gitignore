@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
+/public/image/wallpaper
 /storage/*.key
 /storage/framework/cache
 /storage/framework/sessions
