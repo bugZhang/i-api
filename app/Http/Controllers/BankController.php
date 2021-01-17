@@ -56,8 +56,9 @@ class BankController extends Controller
                 $temp['bank_name'] = $bank->bank_name;
                 $temp['bank_code'] = $bank->bank_code;
                 $temp['branch_bank_code'] = $bank->branch_bank_code;
-                $temp['branch_bank_short_name'] = preg_replace("/^" . $this->newBanks[$bankCode] . "/", '', $bank->branch_bank_name, 1);
-                $temp['branch_bank_short_name'] = preg_replace("/^股份有限公司/", '', $temp['branch_bank_short_name'], 1);
+//                $temp['branch_bank_short_name'] = preg_replace("/^" . $this->newBanks[$bankCode] . "/", '', $bank->branch_bank_name, 1);
+//                $temp['branch_bank_short_name'] = preg_replace("/^股份有限公司/", '', $temp['branch_bank_short_name'], 1);
+                $temp['branch_bank_short_name'] = $bank->branch_bank_name;
 
                 $temp['branch_bank_name'] = $bank->branch_bank_name;
 
