@@ -20,10 +20,6 @@ class BankModel extends Model
         $offset = $limit * ($page - 1);
         $condition = [];
 
-        if(time() % 3 == 0){
-            $this->saveKeyword($keyword);
-        }
-
         if(is_numeric($keyword)){
             $condition[] = ['branch_bank_code', '=', $keyword];
             $banks = DB::table('banks')->where($condition)
@@ -55,7 +51,12 @@ class BankModel extends Model
 //                ->limit($limit)
 //                ->get();
         }
-        return $banks && $banks->count() ? $banks : false;
+
+        if(time() % 3 == 0){
+            $this->saveKeyword($keyword, $banks->count());
+        }
+
+        return $banks->isEmpty() ? false : $banks;
     }
 
     public function selectBanksByNameAndArea($bankCode, $keyword, $province, $page = 1){
@@ -95,9 +96,9 @@ class BankModel extends Model
         return $banks && $banks->count() ? $banks : false;
     }
 
-    public function saveKeyword($keyword){
+    public function saveKeyword($keyword, $count = 0){
         if($keyword){
-            $this->from('wx_search_keyword')->insert(['content' => $keyword]);
+            $this->from('wx_search_keyword')->insert(['content' => $keyword, 'result_count' => $count]);
         }
     }
 
