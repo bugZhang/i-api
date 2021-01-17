@@ -20,6 +20,10 @@ class BankModel extends Model
         $offset = $limit * ($page - 1);
         $condition = [];
 
+        if(time() % 3 == 0){
+            $this->saveKeyword($keyword);
+        }
+
         if(is_numeric($keyword)){
             $condition[] = ['branch_bank_code', '=', $keyword];
             $banks = DB::table('banks')->where($condition)
