@@ -31,17 +31,25 @@ class BankModel extends Model
         }else{
             $condition[] = ['bank_code', '=', $bankCode];
             $condition[] = ['province_name', '=', $province];
+
             $banks = DB::table('banks')->where($condition)
-                ->where(function($query) use ($keyword){
-                    $query->where('branch_bank_name', 'like', '%' . $keyword . '%')
-                        ->orWhere(function($query) use ($keyword){
-                            $query->where('city_name', 'like', '%' . $keyword . '%');
-                        });
-                })
+                ->whereRaw("MATCH(`branch_bank_name`, `branch_bank_address`) AGAINST (?)", [$keyword])
                 ->select('id', 'bank_name', 'bank_code', 'branch_bank_code', 'branch_bank_name')
                 ->offset($offset)
                 ->limit($limit)
                 ->get();
+
+//            $banks = DB::table('banks')->where($condition)
+//                ->where(function($query) use ($keyword){
+//                    $query->where('branch_bank_name', 'like', '%' . $keyword . '%')
+//                        ->orWhere(function($query) use ($keyword){
+//                            $query->where('city_name', 'like', '%' . $keyword . '%');
+//                        });
+//                })
+//                ->select('id', 'bank_name', 'bank_code', 'branch_bank_code', 'branch_bank_name')
+//                ->offset($offset)
+//                ->limit($limit)
+//                ->get();
         }
         return $banks && $banks->count() ? $banks : false;
     }
